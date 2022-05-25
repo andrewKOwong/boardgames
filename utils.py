@@ -39,7 +39,13 @@ class Extractor():
         self.item = item
 
     def extract_id(self):
-        return int(self.item.attrib['id'])
+        try:
+            return int(self.item.attrib['id'])
+        except KeyError:
+            raise KeyError("Missing id attribute.")
 
     def extract_year_published(self):
-        return int(self.item.find("yearpublished").attrib['value'])
+        element = self.item.find("yearpublished")
+        if element is None:
+            raise TypeError("Missing tag 'yearpublished'.")
+        return int(element.attrib['value'])
