@@ -49,3 +49,26 @@ class Extractor():
         if element is None:
             raise TypeError("Missing tag 'yearpublished'.")
         return int(element.attrib['value'])
+
+
+def extract_xml(file_path: str,
+                id: bool = True,
+                year_published: bool = False) -> dict:
+    # Initialize empty lists for each data type of interest
+    out = {}
+    if id:
+        out['id'] = []
+    if year_published:
+        out['year_published'] = []
+
+    # Get the root <items> item for an xml file
+    root = read_xml_file(file_path)
+    # Load up data from each item
+    for item in root:
+        e = Extractor(item)
+        if id:
+            out['id'].append(e.extract_id())
+        if year_published:
+            out['year_published'].append(e.extract_year_published())
+
+    return out
