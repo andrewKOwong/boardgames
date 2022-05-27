@@ -4,7 +4,8 @@ import pytest
 
 # Test data contains two items, a boardgame
 # as the first item, and additional items for error handling testing.
-TEST_DATA_FILEPATH = 'test_data.xml'
+# Path is as if `python -m pytest` is being run in the root folder.
+TEST_DATA_FILEPATH = 'test/test_data.xml'
 
 # Use bytes as etree.fromstring only allows encoding declaration
 # when it is bytes.
