@@ -6,6 +6,10 @@ BoardGameGeek provides an [XML API](https://boardgamegeek.com/wiki/page/BGG_XML_
 
 This can be reproduced by running `python sample_boardgames.py`, although you could manually edit the sampling size, number of requests, wait time, and filepaths.
 
+## Testing
+
+Run `python -m pytest` in root directory to run `test` folder tests.
+
 ## Possible improvements
 
 I sampled essentially with replacement, but one could rewrite the sampling function to generate a non-duplicated list of ids of the desired final size and then break that into chunks.
