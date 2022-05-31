@@ -45,11 +45,42 @@ class Extractor():
         except KeyError:
             raise KeyError("Missing id attribute.")
 
+    def extract_name(self):
+        element = self.item.find("name")
+        if element is None:
+            raise TypeError("Missing tag 'name'.")
+        return element.attrib['value']
+
     def extract_year_published(self):
         element = self.item.find("yearpublished")
         if element is None:
             raise TypeError("Missing tag 'yearpublished'.")
         return int(element.attrib['value'])
+
+    def extract_n_ratings(self):
+        "Return number of ratings."
+        out = self.item.find("statistics")\
+                       .find("ratings")\
+                       .find("usersrated")\
+                       .attrib['value']
+        return int(out)
+
+    def extract_ratings_mean(self):
+        """Return mean average rating to 3 decimals."""
+        out = self.item.find("statistics")\
+                       .find("ratings")\
+                       .find("average")\
+                       .attrib['value']
+        return round(float(out), 3)
+
+    def extract_ratings_stddev(self):
+        """Return rating standard deviation to 4 decimals."""
+        out = self.item.find("statistics")\
+                       .find("ratings")\
+                       .find("stddev")\
+                       .attrib['value']
+        # Banker's rounding (round half to even)
+        return round(float(out), 4)
 
 
 def extract_xml(file_path: str,

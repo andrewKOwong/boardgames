@@ -40,6 +40,32 @@ def test_extractor_year_published(xml_data=xml_data):
         item.extract_year_published()
 
 
+def test_extractor_name(xml_data=xml_data):
+    item = u.Extractor(xml_data[0])
+    assert item.extract_name() == "1812: Caspara"
+    # Test missing name tag
+    item = u.Extractor(xml_data[1])
+    with pytest.raises(TypeError):
+        item.extract_name()
+
+
+def test_extractor_n_ratings(xml_data=xml_data):
+    item = u.Extractor(xml_data[0])
+    assert item.extract_n_ratings() == 7
+
+
+def test_extractor_ratings_mean(xml_data=xml_data):
+    item = u.Extractor(xml_data[0])
+    assert item.extract_ratings_mean() == 5.500
+
+
+def test_extractor_ratings_stddev(xml_data=xml_data):
+    item = u.Extractor(xml_data[0])
+    # Rounded answer by Banker's rounding
+    # (round half to even)
+    assert item.extract_ratings_stddev() == 1.6690
+
+
 def test_extract_xml(file_path=TEST_DATA_SINGLE_FILEPATH):
     data = u.extract_xml(file_path=file_path, id=True, year_published=True)
     print(data)
