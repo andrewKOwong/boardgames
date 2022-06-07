@@ -5,10 +5,14 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from matplotlib import rcParams
 from matplotlib.colors import XKCD_COLORS as xc
+import matplotlib as mpl
 import utils as u
 
 # Matplotlib configuration
 plt.style.use('ggplot')
+COL_CRIMSON = xc['xkcd:crimson']
+
+CURRENT_YEAR = 2022
 
 # Get all the xml file names
 xml_data_files = [
@@ -37,25 +41,39 @@ st.write("## Cleaned Statistics")
 st.write(clean_df.describe())
 
 
-def plot_year_hist(df: pd.DataFrame,
-                   year_published_key: str = 'year_published',
-                   n_bins: int = 24,
-                   bin_range: tuple[float, float] = None,
-                   **kwargs):
-    fig, ax = plt.subplots(figsize=(6, 6))
-    n, bins, patches = ax.hist(x=year_published_key,
-                               data=df,
-                               range=bin_range,
-                               bins=n_bins,
-                               **kwargs)
+# Examine year published statistics
+st.write("## Games by Year Published")
 
+
+def generate_year_histograms(df: pd.DataFrame) -> mpl.figure.Figure:
+    """Generates"""
+    FIG_SIZE = (6, 3)
+    YEAR_KEY = 'year_published'
+
+    fig, axes = plt.subplots(1, 2, figsize=FIG_SIZE)
+
+    # Histogram with all data
+    axes[0].hist(data=df,
+                 x=YEAR_KEY,
+                 bins=20,
+                 log=True,
+                 color=COL_CRIMSON
+                 )
+    # Histogram from 1980 onwards
+    axes[1].hist(data=df,
+                 x=YEAR_KEY,
+                 bins=np.arange(1979.5,
+                                df[YEAR_KEY].max() + 1,
+                                1),
+                 color=COL_CRIMSON)
+
+    # Set labels
+    for ax in axes:
+        ax.set_xlabel("Year")
+        ax.set_ylabel("Count")
+
+    fig.tight_layout()
     return fig
 
 
-test = plot_year_hist(clean_df,
-                      bin_range=(700, 2024),
-                      color=xc['xkcd:crimson']
-                      )
-
-# dpi arg gets passed to matplotlib.savefig
-st.pyplot(test, dpi=600)
+st.pyplot(generate_year_histograms(clean_df))
