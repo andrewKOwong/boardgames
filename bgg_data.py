@@ -72,7 +72,7 @@ def retrieve_bgg_data(uri):
     t1 = time.time()
     r = requests.get(uri)
     t2 = time.time()
-    print(f"Request took {t2-t1} seconds ({(t2-t1)/60} minutes).")
+    print(f"Request took {round(t2-t1,4)} seconds.")
     return r
 
 
