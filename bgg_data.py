@@ -191,7 +191,10 @@ def sample_random_ids_by_chunk(dir_path: str,
     # raise if something goes wrong (e.g. blocked by server),
     # and a file written for that chunk.
     # Then a cooldown to not hammer the server.
+    total_chunks = len(ids)
     for i, ids_chunk in enumerate(ids):
+        print("---")
+        print(f"Request {i+1} of {total_chunks}")
         uri = generate_game_uri(ids_chunk, **kwargs)
         response = retrieve_bgg_data(uri)
         if raise_if_fail:
@@ -199,11 +202,12 @@ def sample_random_ids_by_chunk(dir_path: str,
         write_response(response,
                        f"{dir_path}"
                        f"{file_prefix}{i+1}{file_suffix}")
+        print(f"Elapsed time: {round((time.time() - t_1)/60)} minutes.")
         time.sleep(cooldown_time)
 
     # Total elapsed time
     t_2 = time.time()
-    print(f"Total time elapsed: {t_2 - t_1} seconds.")
+    print(f"Total time elapsed: {round((t_2 - t_1)/60)} seconds.")
 
 
 def write_response(response, out_path):
