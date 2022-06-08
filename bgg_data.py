@@ -1,5 +1,6 @@
 import requests
 import time
+import os
 import random
 import xml.etree.ElementTree as ET
 
@@ -104,6 +105,105 @@ def sample_random_ids(k=100, max_id=362383, random_state=None, **kwargs):
     uri = generate_game_uri(ids, **kwargs)
     # Make the request and return the Response
     return retrieve_bgg_data(uri)
+
+
+def sample_random_ids_by_chunk(dir_path: str,
+                               file_prefix: str = 'sample_',
+                               file_suffix: str = '.xml',
+                               k: int = 10,
+                               chunk_size: int = 1,
+                               max_id: int = 362383,
+                               cooldown_time: int = 300,
+                               raise_if_fail: bool = True,
+                               random_state: int = None,
+                               **kwargs) -> None:
+    """Sample random boardgame ids in chunks and retrieve the data.
+
+    Best used for collecting large number of ids.
+
+    Parameters
+    ----------
+    dir_path : str
+        Output folder for xml output files.
+    file_prefix : str, optional
+        Output file prefix, by default 'sample_'
+    file_suffix : str, optional
+        Output file suffix, by default '.xml'
+    k : int, optional
+        Number of total samples, by default 10.
+    chunk_size : int, optional
+        Number of ids per server request, by default 1.
+        Inadvisable to do very large chunks due to server penalties.
+        Probably max ~1000.
+    max_id : int, optional
+        The approximate highest used id on BGG.
+        By default 362383.
+    cooldown_time : int, optional
+        Time (in seconds) to wait between requests.
+        By default 300.
+    raise_if_fail : bool, optional
+        By default True.
+        Will raise an error via response.raise_for_status().
+    random_state : int, optional
+        _description_, by default None
+
+    Returns
+    -------
+    None
+
+
+    Raises
+    ------
+    FileNotFoundError
+        The output directory doesn't exist.
+    FileNotFoundError
+        The output directory isn't a directory.
+    HTTPError
+        If raise_if_fail == True, if the response
+        status isn't 200, an error will be raised.
+        This is prevents continual requests if 
+        the server has started denying the requests.
+    """
+    # Add ending directory slash if not exists
+    if dir_path[-1] != '/':
+        dir_path += '/'
+
+    # Check directory is ok.
+    if not os.path.exists(dir_path):
+        raise FileNotFoundError(
+            f"'{dir_path}' does not exist. "
+            f"Please create it first.")
+    if not os.path.isdir(dir_path):
+        raise FileNotFoundError(
+            f"'{dir_path}' is not a directory. "
+            f"Please provide another folder path."
+        )
+
+    # Timing
+    t_1 = time.time()
+
+    # Generate list of random ids and break into chunks
+    random.seed(random_state)
+    ids = random.sample(range(1, max_id+1), k)
+    ids = [ids[i:i + chunk_size]
+           for i in range(0, len(ids), chunk_size)]
+    # Each chunk of ids get a uri, get the response,
+    # raise if something goes wrong (e.g. blocked by server),
+    # and a file written for that chunk.
+    # Then a cooldown to not hammer the server.
+    for i, ids_chunk in enumerate(ids):
+        uri = generate_game_uri(ids_chunk, **kwargs)
+        response = retrieve_bgg_data(uri)
+        if raise_if_fail:
+            response.raise_for_status()
+        write_response(response,
+                       f"{dir_path}"
+                       f"{file_prefix}{i+1}{file_suffix}")
+        time.sleep(cooldown_time)
+
+    # Total elapsed time
+    t_2 = time.time()
+    print(f"Total time elapsed: {t_2 - t_1} seconds.")
 
 
 def write_response(response, out_path):
