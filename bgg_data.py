@@ -1,6 +1,7 @@
 import requests
 import time
 import os
+import json
 import random
 import xml.etree.ElementTree as ET
 
@@ -208,6 +209,50 @@ def sample_random_ids_by_chunk(dir_path: str,
     # Total elapsed time
     t_2 = time.time()
     print(f"Total time elapsed: {round((t_2 - t_1)/60)} seconds.")
+
+
+def retrieve_data_resumable(
+        dir_path: str,
+        file_prefix: str = 'sample_',
+        file_suffix: str = '.xml',
+        resume_from_existing: bool = True,
+        temp_file_path: str = "remaining_ids.tmp",
+        k: int = 10,
+        chunk_size: int = 1,
+        max_id: int = 362383,
+        cooldown_time: int = 300,
+        raise_if_fail: bool = True,
+        random_state: int = None,
+        **kwargs):
+    pass
+
+    # Resume from existing or generate a new file.
+    if resume_from_existing and os.path.exists(temp_file_path):
+        with open(temp_file_path, 'r'):
+            # READ IN JSON STUFF
+            pass
+    else:
+        # Generate list of random ids and break into chunks
+        random.seed(random_state)
+        ids = random.sample(range(1, max_id+1), k)
+        ids = [ids[i:i + chunk_size]
+               for i in range(0, len(ids), chunk_size)]
+
+    # READ THE FILE
+
+    # FOR LOOP
+    #   TRY:
+    #      GRAB A CHUNK.
+    #      GENERATE THE URI
+    #      MAKE THE QUERY.
+    #      LOG (ITERATION, ITER TIME, CUMU TIME, STATUS CODE)
+    #      REMOVE THE CHUNK FORM MAIN LIST
+    #      SMALL WAIT TIME
+    #   EXCEPT (STATUS CODE):
+    # IF 'PAUSE', PAUSE: REPICKLE THE FILE.
+    # ELSE IF WAIT: WAIT A TIME
+    #   SLEEP
+    #
 
 
 def write_response(response, out_path):
