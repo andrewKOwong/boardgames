@@ -2,6 +2,7 @@ import requests
 import time
 import os
 import json
+import logging
 import random
 import xml.etree.ElementTree as ET
 
@@ -212,47 +213,85 @@ def sample_random_ids_by_chunk(dir_path: str,
 
 
 def retrieve_data_resumable(
-        dir_path: str,
-        file_prefix: str = 'sample_',
-        file_suffix: str = '.xml',
+        output_dir: str,
+        output_prefix: str = 'sample_',
+        output_suffix: str = '.xml',
         resume_from_existing: bool = True,
-        temp_file_path: str = "remaining_ids.tmp",
+        temp_tracking_file: str = "remaining_ids.tmp",
         k: int = 10,
-        chunk_size: int = 1,
+        batch_size: int = 1,
         max_id: int = 362383,
         cooldown_time: int = 300,
         raise_if_fail: bool = True,
         random_state: int = None,
-        **kwargs):
-    pass
+        log_file: str = 'bgg_data.log',
+        **kwargs) -> None:
 
-    # Resume from existing or generate a new file.
-    if resume_from_existing and os.path.exists(temp_file_path):
-        with open(temp_file_path, 'r'):
-            # READ IN JSON STUFF
-            pass
+    # Directory Validation
+    # Check/add ending slash for output directory
+    if output_dir[-1] != '/':
+        output_dir += '/'
+    # Check output directory exists and is a directory
+    if not os.path.exists(output_dir):
+        raise FileNotFoundError(
+            f"'{output_dir}' does not exist. "
+            f"Please create it first.")
+    if not os.path.isdir(output_dir):
+        raise FileNotFoundError(
+            f"'{output_dir}' is not a directory. "
+            f"Please provide another folder path."
+        )
+
+    # Resume from existing file or generate a new list of random ids.
+    if resume_from_existing and os.path.exists(temp_tracking_file):
+        with open(temp_tracking_file, 'r') as f:
+            data = json.load(f)
+            try:
+                assert data['type'] == 'bgg_data_download'
+            except AssertionError:
+                raise ValueError("Resumable file does not appear to be correct format.")
+            ids = json.load(f)['incomplete']
     else:
-        # Generate list of random ids and break into chunks
         random.seed(random_state)
         ids = random.sample(range(1, max_id+1), k)
-        ids = [ids[i:i + chunk_size]
-               for i in range(0, len(ids), chunk_size)]
+        # Batchify the ids (to a list of [[batch_num, batch], ...])
+        ids = [ids[i:i + batch_size] for i in range(0, len(ids), batch_size)]
+        ids = [[batch_num, batch] for batch_num, batch in enumerate(ids)]
+        # Initial write to a JSON file that tracks completed and uncompleted ids.
+        with open(temp_tracking_file, 'w') as f:
+            json.dump({
+                'type': 'bgg_data_download',
+                'complete': [],
+                'incomplete': ids
+            }, f)
 
-    # READ THE FILE
+    for batch_num, batch in ids:
+        uri = generate_game_uri(batch)
+        response = retrieve_bgg_data(uri)
+        
+        if raise_if_fail:
+            try:
+                response.raise_for_status()
+            except requests.exceptions.HTTPError as e:
+                raise Exception("Server request failed, check if blocked by server.") from e
+        
+        write_response(
+            response,
+            f"{output_dir}{output_prefix}{batch_num}{output_suffix}"
+            )
+        
+        # Rewrite the tracking file to advance progress
+        with open(temp_tracking_file, 'w') as f:
+            # list.pop is O(N), but the list is small
+            data['complete'].append(data['incomplete'].pop(0))
+            json.dump(data, f)
+        
+        time.sleep(cooldown_time)
 
-    # FOR LOOP
-    #   TRY:
-    #      GRAB A CHUNK.
-    #      GENERATE THE URI
-    #      MAKE THE QUERY.
+
     #      LOG (ITERATION, ITER TIME, CUMU TIME, STATUS CODE)
     #      REMOVE THE CHUNK FORM MAIN LIST
     #      SMALL WAIT TIME
-    #   EXCEPT (STATUS CODE):
-    # IF 'PAUSE', PAUSE: REPICKLE THE FILE.
-    # ELSE IF WAIT: WAIT A TIME
-    #   SLEEP
-    #
 
 
 def write_response(response, out_path):
