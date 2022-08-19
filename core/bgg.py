@@ -57,3 +57,38 @@ def generate_game_uri(
     uri += ','.join([str(i) for i in ids])
 
     return uri
+
+
+def xml_collater():
+    pass
+
+
+def file_utility_of_some_sort():
+    """
+    Track progress somehow.
+    JSON would be straight forward.
+
+    Keep track of batches, status of batches (200, 202, rejection).
+
+    list of {batch id, game ids, status (complete, incomplete, queued, last accessed)}
+
+    Inefficient solution is to loop through and do the ones that are queued.
+
+    Random state should be optional.
+
+    """
+    pass
+
+
+class Retriever:
+    def __init__(self):
+        pass
+
+    def api_request(self):
+        pass
+
+    def sample(self):
+        pass
+
+    def retrieve_all(self):
+        pass
