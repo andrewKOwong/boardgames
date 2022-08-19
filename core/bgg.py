@@ -105,6 +105,6 @@ class Retriever:
             data = json.load(f)
         return data
 
-    def check_progress_file_exists(self):
+    def check_progress_file_exists(self) -> bool:
         """True if save file already exists."""
         return os.path.isfile(self.save_path)
