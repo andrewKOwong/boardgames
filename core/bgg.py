@@ -67,6 +67,11 @@ def xml_collater():
 
 
 class Retriever:
+    MAX_ID = 362383
+    PROGRESS_COMPLETE = 'complete'
+    PROGRESS_INCOMPLETE = 'incomplete'
+    PROGRESS_QUEUED = 'queued'
+
     def __init__(self, save_path):
         self.save_path = save_path
 
