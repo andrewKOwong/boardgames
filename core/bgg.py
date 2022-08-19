@@ -1,5 +1,5 @@
 def generate_game_uri(
-    ids: list = [],
+    ids: list = None,
     filter_basegame: bool = True, 
     filter_expansion: bool = False, 
     stats: bool = True, 
@@ -31,6 +31,10 @@ def generate_game_uri(
     BASE_GAME_TYPE = "boardgame"
     # Expansions
     EXPANSION_TYPE = "boardgameexpansion"
+
+    # Instantiated empty list
+    if ids is None:
+        ids = []
 
     # Set up the output
     uri = base_api_endpoint
