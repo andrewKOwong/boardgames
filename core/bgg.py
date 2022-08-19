@@ -1,4 +1,5 @@
 import os
+import json
 
 def generate_game_uri(
     ids: list = None,
@@ -98,8 +99,11 @@ class Retriever:
     def create_progress_file(self):
         pass
 
-    def load_progress_file(self):
-        pass
+    def load_progress_file(self) -> dict:
+        """Returns a dict from save path json file."""
+        with open(self.save_path, 'r') as f:
+            data = json.load(f)
+        return data
 
     def check_progress_file_exists(self):
         """True if save file already exists."""
