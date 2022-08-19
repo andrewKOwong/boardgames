@@ -1,3 +1,5 @@
+import os
+
 def generate_game_uri(
     ids: list = None,
     filter_basegame: bool = True,
@@ -100,4 +102,5 @@ class Retriever:
         pass
 
     def check_progress_file_exists(self):
-        pass
+        """True if save file already exists."""
+        return os.path.isfile(self.save_path)
