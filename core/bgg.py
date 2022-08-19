@@ -96,8 +96,10 @@ class Retriever:
     def retrieve_all(self):
         pass
 
-    def create_progress_file(self):
-        pass
+    def save_progress_file(self, progress: dict) -> None:
+        """Takes the progress dict and saves it to the preloaded save path."""
+        with open(self.save_path, 'w') as f:
+            json.dump(progress, f)
 
     def load_progress_file(self) -> dict:
         """Returns a dict from save path json file."""
