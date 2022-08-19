@@ -1,8 +1,8 @@
 def generate_game_uri(
     ids: list = None,
-    filter_basegame: bool = True, 
-    filter_expansion: bool = False, 
-    stats: bool = True, 
+    filter_basegame: bool = True,
+    filter_expansion: bool = False,
+    stats: bool = True,
     base_api_endpoint: str = "https://boardgamegeek.com/xmlapi2/thing?"
     ) -> str:
     """Construct a URI to get one or more games based on their id.
