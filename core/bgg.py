@@ -96,6 +96,28 @@ class Retriever:
     def retrieve_all(self):
         pass
 
+    def create_progress_object(
+            self,
+            ids: list,
+            batch_size: int = 1000) -> list:
+        """Batchify list of ids, returning progress object with statuses per batch.
+
+        Args:
+            ids (list): BGG thing ids e.g. board games.
+            batch_size (int, optional): Defaults to 1000.
+
+        Returns:
+            list: _description_
+        """
+
+        progress = [
+            {'ids': ids[i: i+batch_size],
+             'status': '',
+             'last_accessed': ''}
+            for i in range(0, len(ids), batch_size)]
+
+        return progress
+
     def save_progress_file(self, progress: dict) -> None:
         """Takes the progress dict and saves it to the preloaded save path."""
         with open(self.save_path, 'w') as f:
