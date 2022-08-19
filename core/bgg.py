@@ -104,8 +104,8 @@ class Retriever:
     def load_progress_file(self) -> dict:
         """Returns a dict from save path json file."""
         with open(self.save_path, 'r') as f:
-            data = json.load(f)
-        return data
+            progress = json.load(f)
+        return progress
 
     def check_progress_file_exists(self) -> bool:
         """True if save file already exists."""
