@@ -81,8 +81,8 @@ def file_utility_of_some_sort():
 
 
 class Retriever:
-    def __init__(self):
-        pass
+    def __init__(self, save_path):
+        self.save_path = save_path
 
     def api_request(self):
         pass
@@ -91,4 +91,13 @@ class Retriever:
         pass
 
     def retrieve_all(self):
+        pass
+
+    def create_progress_file(self):
+        pass
+
+    def load_progress_file(self):
+        pass
+
+    def check_progress_file_exists(self):
         pass
