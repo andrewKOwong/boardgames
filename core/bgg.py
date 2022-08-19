@@ -76,7 +76,7 @@ class Retriever:
     def sample(self):
         pass
 
-    def retrieve_all(self, max_id: int = ):
+    def retrieve_all(self):
         # Pseudo code:
         # 1) Check if save_path file exists
         # 2) If it exists, load a progress object from it.
