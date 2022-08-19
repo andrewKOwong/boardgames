@@ -66,23 +66,6 @@ def xml_collater():
     pass
 
 
-def file_utility_of_some_sort():
-    """
-    Track progress somehow.
-    JSON would be straight forward.
-
-    Keep track of batches, status of batches (200, 202, rejection).
-
-    list of {batch id, game ids, status (complete, incomplete, queued, last accessed)}
-
-    Inefficient solution is to loop through and do the ones that are queued.
-
-    Random state should be optional.
-
-    """
-    pass
-
-
 class Retriever:
     def __init__(self, save_path):
         self.save_path = save_path
@@ -93,7 +76,14 @@ class Retriever:
     def sample(self):
         pass
 
-    def retrieve_all(self):
+    def retrieve_all(self, max_id: int = ):
+        # Pseudo code:
+        # 1) Check if save_path file exists
+        # 2) If it exists, load a progress object from it.
+        # 3) If it doesn't exist, generate list of ids from 1 to max id,
+        #, then create a progress object that batchifies this
+        # 4) Loop through progress object, updating it and saving it everytime.
+
         pass
 
     def create_progress_object(
