@@ -78,9 +78,6 @@ class Retriever:
     def api_request(self):
         pass
 
-    def sample(self):
-        pass
-
     def retrieve_all(self):
         # Pseudo code:
         # 1) Check if save_path file exists
