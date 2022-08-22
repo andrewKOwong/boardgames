@@ -25,15 +25,11 @@ class Retriever:
     def api_request(self, uri):
         """Make a request for board game geek data.
 
-        Parameters
-        ----------
-        uri : str
-            String URI for accessing the API.
+        Args:
+            uri (str): String URI for accessing the API.
 
-        Returns
-        -------
-        Response object
-            The resulting response from the HTTP request.
+        Returns:
+            requests.models.Response: response from the HTTP request.
         """
         r = requests.get(uri)
         return r
