@@ -179,3 +179,14 @@ class Retriever:
         # i.e. [1,2] -> '1,2'
         uri += ','.join([str(i) for i in ids])
         return uri
+
+    def _countdown(time_to_sleep: int) -> None:
+        """Prints a countdown timer."""
+        for i in range(time_to_sleep, 0, -1):
+            h = i // 3600
+            m = (i % 3600) // 60
+            s = (i % 3600) % 60
+            # Countdown in place without new lines
+            print(f"\rResuming in {h}h {m}m {s}s", end='')
+            sleep(1)
+        print(f"\rResuming in {0}h {0}m {0}s")
