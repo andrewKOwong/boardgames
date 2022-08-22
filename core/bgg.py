@@ -162,7 +162,7 @@ class Retriever:
             batch_size (int, optional): Defaults to 1000.
 
         Returns:
-            list: _description_
+            list: of dicts containing batches of ids and status info
         """
 
         progress = [
