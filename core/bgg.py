@@ -166,9 +166,9 @@ class Retriever:
         """
 
         progress = [
-            {'ids': ids[i: i+batch_size],
-             'status': '',
-             'last_accessed': ''}
+            {self.PROGRESS_KEY_IDS: ids[i: i+batch_size],
+             self.PROGRESS_KEY_STATUS: self.PROGRESS_STATUS_INCOMPLETE,
+             self.PROGRESS_KEY_LAST_ACCESSED: ''}
             for i in range(0, len(ids), batch_size)]
 
         return progress
