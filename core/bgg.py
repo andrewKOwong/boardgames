@@ -4,6 +4,7 @@ import json
 from time import sleep
 import requests
 
+
 def xml_collater():
     pass
 
@@ -17,7 +18,6 @@ class Retriever:
     PROGRESS_KEY_STATUS = "status"
     PROGRESS_KEY_LAST_ACCESSED = "last_accessed"
     BASE_API = "https://boardgamegeek.com/xmlapi2/thing?"
-
 
     def __init__(self, save_path):
         self.save_path = save_path
@@ -156,7 +156,7 @@ class Retriever:
             str:  URI accessing board games with specified ids.
         """
         # Thing types
-        BASE_GAME_TYPE = "boardgame" # i.e. non expansions
+        BASE_GAME_TYPE = "boardgame"  # i.e. non expansions
         EXPANSION_TYPE = "boardgameexpansion"
 
         # Instantiated empty list
