@@ -84,7 +84,7 @@ class Retriever:
                         f"Waiting {server_cooldown} seconds before continuing."
                     )
                     print(message)
-                    sleep(server_cooldown)
+                    self._countdown(server_cooldown)
 
             # Load progress file at the end and count up how many incompletes.
             # Also, data actually has to be saved somehow.
