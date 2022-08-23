@@ -85,7 +85,7 @@ class Retriever:
                         self.PROGRESS_STATUS_COMPLETE
                     progress[idx] = batch
                     self.save_progress_file(progress)
-                if r.status_code == 202:
+                elif r.status_code == 202:
                     batch[self.PROGRESS_KEY_STATUS] == \
                         self.PROGRESS_STATUS_QUEUED
                     progress[idx] = batch
