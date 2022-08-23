@@ -192,7 +192,7 @@ class Retriever:
         uri += ','.join([str(i) for i in ids])
         return uri
 
-    def _countdown(time_to_sleep: int) -> None:
+    def _countdown(self, time_to_sleep: int) -> None:
         """Prints a countdown timer."""
         for i in range(time_to_sleep, 0, -1):
             h = i // 3600
