@@ -1,5 +1,6 @@
 import os
 import sys
+from pathlib import Path
 import json
 from time import sleep
 import requests
@@ -18,9 +19,18 @@ class Retriever:
     PROGRESS_KEY_STATUS = "status"
     PROGRESS_KEY_LAST_ACCESSED = "last_accessed"
     BASE_API = "https://boardgamegeek.com/xmlapi2/thing?"
+    DIR_XML_PATH_STR = 'xml'
 
-    def __init__(self, save_path):
-        self.save_path = save_path
+    def __init__(self, save_path, save_dir):
+        save_dir = Path(save_dir)
+        if not save_dir.exists():
+            raise FileNotFoundError(f"Dir {str(save_dir)} does not exist.")
+        if not save_dir.is_dir():
+            raise NotADirectoryError(f"{str(save_dir)} is not a directory.")
+
+        xml_dir = save_dir / self.DIR_XML_PATH_STR
+        self.xml_dir = str(xml_dir)
+        self.progress_path = str(save_path)
 
     def api_request(self, uri):
         """Make a request for board game geek data.
@@ -113,18 +123,18 @@ class Retriever:
 
     def save_progress_file(self, progress: dict) -> None:
         """Takes the progress dict and saves it to the preloaded save path."""
-        with open(self.save_path, 'w') as f:
+        with open(self.progress_path, 'w') as f:
             json.dump(progress, f)
 
     def load_progress_file(self) -> dict:
         """Returns a dict from save path json file."""
-        with open(self.save_path, 'r') as f:
+        with open(self.progress_path, 'r') as f:
             progress = json.load(f)
         return progress
 
     def check_progress_file_exists(self) -> bool:
         """True if save file already exists."""
-        return os.path.isfile(self.save_path)
+        return os.path.isfile(self.progress_path)
 
     def generate_game_uri(
         self,
