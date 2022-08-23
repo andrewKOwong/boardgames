@@ -19,8 +19,8 @@ class Retriever:
     PROGRESS_KEY_STATUS = "status"
     PROGRESS_KEY_LAST_ACCESSED = "last_accessed"
     BASE_API = "https://boardgamegeek.com/xmlapi2/thing?"
-    DIR_XML_PATH_STR = 'xml'
-    DIR_PROGRESS_PATH = 'progress'
+    PATH_XML_DIR = 'xml'
+    PATH_PROGRESS_FILE = 'progress'
 
     def __init__(self, save_dir):
         save_dir = Path(save_dir)
@@ -29,9 +29,9 @@ class Retriever:
         if not save_dir.is_dir():
             raise NotADirectoryError(f"{str(save_dir)} is not a directory.")
 
-        xml_dir = save_dir / self.DIR_XML_PATH_STR
+        xml_dir = save_dir / self.PATH_XML_DIR
         self.xml_dir = str(xml_dir)
-        progress_path = save_dir / self.DIR_PROGRESS_PATH
+        progress_path = save_dir / self.PATH_PROGRESS_FILE
         self.progress_path = str(progress_path)
 
     def api_request(self, uri):
