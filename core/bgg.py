@@ -20,8 +20,9 @@ class Retriever:
     PROGRESS_KEY_LAST_ACCESSED = "last_accessed"
     BASE_API = "https://boardgamegeek.com/xmlapi2/thing?"
     DIR_XML_PATH_STR = 'xml'
+    DIR_PROGRESS_PATH = 'progress'
 
-    def __init__(self, save_path, save_dir):
+    def __init__(self, save_dir):
         save_dir = Path(save_dir)
         if not save_dir.exists():
             raise FileNotFoundError(f"Dir {str(save_dir)} does not exist.")
@@ -30,7 +31,8 @@ class Retriever:
 
         xml_dir = save_dir / self.DIR_XML_PATH_STR
         self.xml_dir = str(xml_dir)
-        self.progress_path = str(save_path)
+        progress_path = save_dir / self.DIR_PROGRESS_PATH
+        self.progress_path = str(progress_path)
 
     def api_request(self, uri):
         """Make a request for board game geek data.
