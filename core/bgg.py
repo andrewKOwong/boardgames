@@ -19,7 +19,7 @@ class Retriever:
     PROGRESS_KEY_LAST_ACCESSED = "last_accessed"
     BASE_API = "https://boardgamegeek.com/xmlapi2/thing?"
     PATH_XML_DIR = 'xml'
-    PATH_PROGRESS_FILE = 'progress'
+    PATH_PROGRESS_FILE = 'progress.json'
 
     def __init__(self, save_dir):
         save_dir = Path(save_dir)
