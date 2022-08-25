@@ -26,7 +26,9 @@ def test_200(monkeypatch, tmp_path):
     retriever = Retriever(save_dir=TEST_DIR)
     retriever.MAX_ID = TEST_MAX_ID
 
-    retriever.retrieve_all(batch_size=TEST_BATCH_SIZE)
+    retriever.retrieve_all(batch_size=TEST_BATCH_SIZE,
+                           shuffle=True,
+                           random_seed=7)
 
     progress_path = Path(retriever.progress_path)
     temp_progress = progress_path.replace(progress_path.parent / 'tmp_prog.json')
