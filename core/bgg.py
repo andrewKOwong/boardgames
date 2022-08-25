@@ -47,7 +47,12 @@ class Retriever:
         r = requests.get(uri)
         return r
 
-    def retrieve_all(self, server_cooldown=12*60*60, shuffle=True, random_seed=None):
+    def retrieve_all(
+            self,
+            server_cooldown=12*60*60,
+            batch_size=1000,
+            shuffle=True,
+            random_seed=None):
         # Resume from an existing progress file
         # or create new progress object and batches.
         if self.check_progress_file_exists():
@@ -57,7 +62,7 @@ class Retriever:
             if shuffle:
                 random.seed(random_seed)
                 random.shuffle(ids)
-            progress = self.create_progress_object(ids, batch_size=1000)
+            progress = self.create_progress_object(ids, batch_size=batch_size)
 
         self.save_progress_file(progress)  # Initial save
         # Loop progress object, ignoring already complete batches.

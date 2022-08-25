@@ -17,7 +17,7 @@ def test_200(monkeypatch, tmp_path):
     TEST_BATCH_SIZE = 2
     TEST_MAX_ID = 10
     TEST_DIR = Path('./exp')  # or tmp_path
-    
+
     def mock_get(url):
         return MockResponse(status_code=200)
 
@@ -26,22 +26,7 @@ def test_200(monkeypatch, tmp_path):
     retriever = Retriever(save_dir=TEST_DIR)
     retriever.MAX_ID = TEST_MAX_ID
 
-    # Patching via a wrapper to discard batch size arg
-    # and use `replace` for batch size instead.
-    # This is necessary to override method calls in
-    # `self.retrieve_all()` that provide batch size.
-    # Not sure if best way, but couldn't get monkeypatch to work.
-    def batch_size_wrapper(
-            self,
-            ids,
-            batch_size=None,
-            replace=TEST_BATCH_SIZE):
-        return Retriever.create_progress_object(self, ids, batch_size=replace)
-
-    retriever.create_progress_object = \
-        types.MethodType(batch_size_wrapper, retriever)
-
-    retriever.retrieve_all()
+    retriever.retrieve_all(batch_size=TEST_BATCH_SIZE)
 
     progress_path = Path(retriever.progress_path)
     temp_progress = progress_path.replace(progress_path.parent / 'tmp_prog.json')
