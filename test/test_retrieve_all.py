@@ -3,6 +3,7 @@ import requests
 import types
 import json
 from functools import partial, partialmethod
+from math import ceil
 from pathlib import Path
 
 from core.bgg import Retriever
@@ -31,8 +32,18 @@ def test_200(monkeypatch, tmp_path):
                            random_seed=7)
 
     progress_path = Path(retriever.progress_path)
+
+    # Reload from the progress file
+    progress = json.loads(progress_path.read_text())
+    # Test the number of batches
+    assert len(progress) == ceil(TEST_MAX_ID/TEST_BATCH_SIZE)
+    # Test the first batch ids
+    assert progress[0][retriever.PROGRESS_KEY_IDS] == [9, 4]
+    # Test the last batch ids
+    assert progress[-1][retriever.PROGRESS_KEY_IDS] == [3, 6]
+    # Test all status are 'complete'
+    statuses = set([e[retriever.PROGRESS_KEY_STATUS] for e in progress])
+    assert len(statuses) == 1
+    assert statuses.pop() == 'complete'
+
     temp_progress = progress_path.replace(progress_path.parent / 'tmp_prog.json')
-
-    progress = json.loads(temp_progress.read_text())
-
-    assert 1 == 1
