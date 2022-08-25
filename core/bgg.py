@@ -1,6 +1,7 @@
 import os
 from pathlib import Path
 import json
+from datetime import datetime
 from time import sleep
 import requests
 
@@ -75,6 +76,9 @@ class Retriever:
                               f"pausing {pause_time} seconds.")
                         sleep(pause_time)
                         continue
+                # First, no matter the result, save the access time
+                batch[self.PROGRESS_KEY_LAST_ACCESSED] = \
+                    datetime.now().strftime('%Y-%b-%d %H:%M:%S.%f')
                 # If its 200, save the file, change status to complete
                 # If it's 202, mark it as queued.
                 # Anything else, could mean server blocking or down,
