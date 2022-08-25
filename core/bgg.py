@@ -125,7 +125,7 @@ class Retriever:
     def save_progress_file(self, progress: dict) -> None:
         """Takes the progress dict and saves it to the preloaded save path."""
         with open(self.progress_path, 'w') as f:
-            json.dump(progress, f)
+            json.dump(progress, f, indent=4)
 
     def load_progress_file(self) -> dict:
         """Returns a dict from save path json file."""
