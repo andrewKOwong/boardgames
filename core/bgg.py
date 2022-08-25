@@ -1,6 +1,7 @@
 import os
 from pathlib import Path
 import json
+import random
 from datetime import datetime
 from time import sleep
 import requests
@@ -46,13 +47,16 @@ class Retriever:
         r = requests.get(uri)
         return r
 
-    def retrieve_all(self, server_cooldown=12*60*60):
+    def retrieve_all(self, server_cooldown=12*60*60, shuffle=True, random_seed=None):
         # Resume from an existing progress file
         # or create new progress object and batches.
         if self.check_progress_file_exists():
             progress = self.load_progress_file()
         else:
             ids = [i for i in range(1, self.MAX_ID + 1)]
+            if shuffle:
+                random.seed(random_seed)
+                random.shuffle(ids)
             progress = self.create_progress_object(ids, batch_size=1000)
 
         self.save_progress_file(progress)  # Initial save
