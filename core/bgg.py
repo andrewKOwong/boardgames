@@ -67,7 +67,8 @@ class Retriever:
 
         self.save_progress_file(progress)  # Initial save
         # Loop progress object, ignoring already complete batches.
-        for idx, batch in enumerate(progress.copy()):
+        # Defensively deepcopy since we're altering during iteration.
+        for idx, batch in enumerate(deepcopy(progress)):
             if batch[self.PROGRESS_KEY_STATUS] == \
                     self.PROGRESS_STATUS_COMPLETE:
                 continue
