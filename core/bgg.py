@@ -105,8 +105,10 @@ class Retriever:
                     progress[idx] = batch
                     self.save_progress_file(progress)
                 else:
+                    print(r.text, '\n')
                     message = (
-                        f"Response {r.status_code}. "
+                        f"Response {r.status_code}. \n"
+                        f"See contents above. \n"
                         f"Waiting {server_cooldown} seconds before continuing."
                     )
                     print(message)
