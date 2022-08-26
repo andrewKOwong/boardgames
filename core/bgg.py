@@ -64,8 +64,8 @@ class Retriever:
                 random.seed(random_seed)
                 random.shuffle(ids)
             progress = self.create_progress_object(ids, batch_size=batch_size)
+            self.save_progress_file(progress)  # Initial save
 
-        self.save_progress_file(progress)  # Initial save
         # Loop progress object, ignoring already complete batches.
         # Defensively deepcopy since we're altering during iteration.
         for idx, batch in enumerate(deepcopy(progress)):
