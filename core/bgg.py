@@ -2,6 +2,7 @@ import os
 from pathlib import Path
 import json
 import random
+from copy import deepcopy
 from datetime import datetime
 from time import sleep
 import requests
@@ -93,12 +94,12 @@ class Retriever:
                 # Anything else, could mean server blocking or down,
                 # so wait a while, then try again.
                 if r.status_code == 200:
-                    batch[self.PROGRESS_KEY_STATUS] == \
+                    batch[self.PROGRESS_KEY_STATUS] = \
                         self.PROGRESS_STATUS_COMPLETE
                     progress[idx] = batch
                     self.save_progress_file(progress)
                 elif r.status_code == 202:
-                    batch[self.PROGRESS_KEY_STATUS] == \
+                    batch[self.PROGRESS_KEY_STATUS] = \
                         self.PROGRESS_STATUS_QUEUED
                     progress[idx] = batch
                     self.save_progress_file(progress)
