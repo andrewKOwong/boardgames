@@ -14,6 +14,7 @@ class MockResponse:
         self.status_code = status_code
 
 
+# Testing if a mock server returns all 200 statuses
 def test_200(monkeypatch, tmp_path):
     TEST_BATCH_SIZE = 2
     TEST_MAX_ID = 10
