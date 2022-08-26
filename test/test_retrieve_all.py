@@ -32,21 +32,22 @@ def test_200(monkeypatch, tmp_path):
     if INSPECT_PROGRESS_FILE:
         TEST_DIR = TEST_DIR_INSPECT
 
+    # Patch out requests.get
     def mock_get(url):
         return MockResponse(status_code=TEST_STATUS_CODE)
 
     monkeypatch.setattr(requests, 'get', mock_get)
 
+    # Run retrieve all, but with a smaller max id,
+    # so a smaller amount of items are returned.
     retriever = Retriever(save_dir=TEST_DIR)
     retriever.MAX_ID = TEST_MAX_ID
-
     retriever.retrieve_all(batch_size=TEST_BATCH_SIZE,
                            shuffle=True,
                            random_seed=TEST_RANDOM_SEED)
 
+    # Reload from the progress file for testing
     progress_path = Path(retriever.progress_path)
-
-    # Reload from the progress file
     progress = json.loads(progress_path.read_text())
     # Test the number of batches
     assert len(progress) == ceil(TEST_MAX_ID/TEST_BATCH_SIZE)
@@ -54,10 +55,12 @@ def test_200(monkeypatch, tmp_path):
     assert progress[0][retriever.PROGRESS_KEY_IDS] == [9, 4]
     # Test the last batch ids
     assert progress[-1][retriever.PROGRESS_KEY_IDS] == [3, 6]
-    # Test all status are 'complete'
+    # Test all status are correct
     statuses = set([e[retriever.PROGRESS_KEY_STATUS] for e in progress])
     assert len(statuses) == 1
     assert statuses.pop() == TEST_STATUS_STR
 
+    # Swap out the progress file so you can inspect it without
+    # reloading the func
     if INSPECT_PROGRESS_FILE:
         progress_path.replace(progress_path.parent / 'tmp_prog.json')
