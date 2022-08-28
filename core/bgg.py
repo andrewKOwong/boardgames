@@ -219,7 +219,10 @@ class Retriever:
             sleep(1)
         print(f"\rResuming in {0}h {0}m {0}s")
 
-    def write_response(response: requests.Response, out_path: str) -> None:
+    def _write_response(
+            self,
+            response: requests.Response,
+            out_path: str) -> None:
         """Write the content of a response to a file.
 
         Args:
