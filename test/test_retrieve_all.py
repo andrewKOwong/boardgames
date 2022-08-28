@@ -1,8 +1,5 @@
-import pytest
 import requests
-import types
 import json
-from functools import partial, partialmethod
 from math import ceil
 from pathlib import Path
 
