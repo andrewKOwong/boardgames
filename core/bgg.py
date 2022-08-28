@@ -23,6 +23,7 @@ class Retriever:
     BASE_API = "https://boardgamegeek.com/xmlapi2/thing?"
     PATH_XML_DIR = 'xml'
     PATH_PROGRESS_FILE = 'progress.json'
+    PAUSE_TIME_NO_CONNECTION = 60
 
     def __init__(self, save_dir):
         save_dir = Path(save_dir)
@@ -82,10 +83,10 @@ class Retriever:
                         r = self.api_request(uri)
                         break
                     except requests.ConnectionError:
-                        pause_time = 600
                         print(f"Unable to connect to internet, "
-                              f"pausing {pause_time} seconds.")
-                        sleep(pause_time)
+                              f"pausing {self.PAUSE_TIME_NO_CONNECTION}"
+                              f" seconds.")
+                        self._countdown(self.PAUSE_TIME_NO_CONNECTION)
                         continue
                 # First, no matter the result, save the access time
                 batch[self.PROGRESS_KEY_LAST_ACCESSED] = \
