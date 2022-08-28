@@ -148,6 +148,10 @@ class Retriever:
             progress = json.load(f)
         return progress
 
+    def remove_progress_file(self) -> None:
+        """Deletes the progress file at the save path, regardless of existence."""
+        Path(self.progress_path).unlink(missing_ok=True)
+
     def check_progress_file_exists(self) -> bool:
         """True if save file already exists."""
         return os.path.isfile(self.progress_path)
