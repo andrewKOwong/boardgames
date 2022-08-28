@@ -98,6 +98,7 @@ class Retriever:
                     batch[self.PROGRESS_KEY_STATUS] = \
                         self.PROGRESS_STATUS_COMPLETE
                     progress[idx] = batch
+                    self._write_response(r, self.xml_dir + f'/{idx}.xml')
                     self.save_progress_file(progress)
                 elif r.status_code == 202:
                     batch[self.PROGRESS_KEY_STATUS] = \
