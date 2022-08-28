@@ -115,7 +115,6 @@ class Retriever:
                     print(message)
                     self._countdown(server_cooldown)
 
-
     def create_progress_object(
             self,
             ids: list,
