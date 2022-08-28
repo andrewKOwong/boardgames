@@ -114,8 +114,6 @@ class Retriever:
                     print(message)
                     self._countdown(server_cooldown)
 
-            # Load progress file at the end and count up how many incompletes.
-            # Also, data actually has to be saved somehow.
 
     def create_progress_object(
             self,
