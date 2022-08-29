@@ -235,3 +235,29 @@ class Retriever:
         """
         with open(out_path, 'wb') as f:
             f.write(response.content)
+
+
+class RetrieverLogger:
+    """Convenience class for logging from Retriever."""
+    def __init__(self) -> None:
+        self.time_start = None
+        self.time_end = None
+
+    def log_run_start(self):
+        pass
+
+    def log_run_complete(self):
+        pass
+
+    def log_server_error(self):
+        pass
+
+    def log_batch_stats(self):
+        pass
+
+    def log_total_batches(self):
+        pass
+
+    def reset(self):
+        """Reset internal variables at start of a retrieval run."""
+        self.__init__(self)
