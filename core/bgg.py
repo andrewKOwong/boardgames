@@ -33,7 +33,7 @@ class Retriever:
             raise NotADirectoryError(f"{str(save_dir)} is not a directory.")
 
         xml_dir = save_dir / self.PATH_XML_DIR
-        xml_dir.mkdir()
+        xml_dir.mkdir(exist_ok=True)
         self.xml_dir = str(xml_dir)
         progress_path = save_dir / self.PATH_PROGRESS_FILE
         self.progress_path = str(progress_path)
