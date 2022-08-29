@@ -216,11 +216,11 @@ class Retriever:
         for i in range(time_to_sleep, 0, -1):
             h = i // 3600
             m = (i % 3600) // 60
-            s = (i % 3600) % 60
+            s = i % 60
             # Countdown in place without new lines
-            print(f"\rResuming in {h}h {m}m {s}s", end='')
+            print(f"\rResuming in {h}h {m:02}m {s:02}s", end='')
             sleep(1)
-        print(f"\rResuming in {0}h {0}m {0}s")
+        print(f"\rResuming in {0}h {0:02}m {0:02}s")
 
     def _write_response(
             self,
