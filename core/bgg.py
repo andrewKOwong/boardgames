@@ -7,6 +7,7 @@ import sys
 from copy import deepcopy
 from datetime import datetime
 from time import sleep, time
+from statistics import median
 import requests
 
 
@@ -264,6 +265,8 @@ class RetrieverLogger:
         self.time_end = None
         self.total_batches = None
         self.time_current_batch_start = None
+        self.batch_times = []  # in seconds rounded to one decimal
+        self.batch_sizes = []  # in bytes
 
         # Set up logger
         logger = logging.getLogger('retriever')
@@ -317,19 +320,28 @@ class RetrieverLogger:
             self,
             idx: int,
             r: requests.Response) -> None:
+        # Batch number
+        batch_n = idx + 1
         # Time in seconds
         batch_time = round(time() - self.time_current_batch_start, 1)
         # Size in bytes
         batch_size = len(r.content)
-        message = f"Batch {idx+1} of {self.total_batches} downloaded"
+        message = f"Batch {batch_n} of {self.total_batches} downloaded"
         message += f" {batch_size/(10**6)} MB "
         message += f" in {batch_time} seconds."
         self.logger.info(message)
-        # TODO Log estimated time complete.
-        # TODO Add size of data to cumulative data count.
-        # TODO log batch statistics
-        # TODO update cumulative data
-        # TODO update estimated time for completion
+        # Update and calculate cumulative times/sizes
+        self.batch_times.append(batch_time)
+        remaining_batches = self.total_batches - (batch_n)
+        time_elapsed = sum(self.batch_times)
+        time_remaining = median(self.batch_times) * remaining_batches
+        self.batch_sizes.append(batch_size)
+        cumu_data_size = sum(self.batch_sizes)
+        message = f"Elapsed: {self._seconds_to_time(time_elapsed)}"
+        message += f"--Remaining: {self._seconds_to_time(time_remaining)}"
+        message += "--Cumulative data size: "
+        message += f"{round(cumu_data_size/(10**6), 1)}"
+        self.logger.info(message)
 
     def log_server_error(self):
         pass
