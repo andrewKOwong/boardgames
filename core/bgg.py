@@ -79,7 +79,7 @@ class Retriever:
             progress = self.create_progress_object(ids, batch_size=batch_size)
             self.save_progress_file(progress)  # Initial save
 
-        # TODO log total number of batches
+        log.log_total_batches(progress)
         # Loop progress object, ignoring already complete batches.
         # Defensively deepcopy since we're altering during iteration.
         for idx, batch in enumerate(deepcopy(progress)):
@@ -295,13 +295,19 @@ class RetrieverLogger:
     def log_new_progress_file(self):
         self.logger.info("Creating new progress file.")
 
+    def log_total_batches(self, progress: list[dict]) -> None:
+        """Log number of batches in a progress object."
+
+        Args:
+            progress (dict): a progress object, which is a list of dicts
+                from Retriever.create_progress_object()
+        """
+        self.logger.info(f"Starting run of {len(progress)} batches.")
+
     def log_server_error(self):
         pass
 
     def log_batch_stats(self):
-        pass
-
-    def log_total_batches(self):
         pass
 
     def reset(self):
