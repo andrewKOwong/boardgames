@@ -116,9 +116,7 @@ class Retriever:
                     progress[idx] = batch
                     self._write_response(r, self.xml_dir + f'/{idx}.xml')
                     self.save_progress_file(progress)
-                    # TODO log batch statistics
-                    # TODO update cumulative data
-                    # TODO update estimated time for completion
+                    log.log_downloaded_batch_stats(idx, r)
                 elif r.status_code == 202:
                     batch[self.PROGRESS_KEY_STATUS] = \
                         self.PROGRESS_STATUS_QUEUED
