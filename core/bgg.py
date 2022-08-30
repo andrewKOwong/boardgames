@@ -261,6 +261,7 @@ class RetrieverLogger:
         self.time_start = None
         self.time_end = None
         self.log_file_path = log_file_path
+        self.total_batches = None
 
         # Set up logger
         logger = logging.getLogger('retriever')
@@ -302,7 +303,8 @@ class RetrieverLogger:
             progress (dict): a progress object, which is a list of dicts
                 from Retriever.create_progress_object()
         """
-        self.logger.info(f"Starting run of {len(progress)} batches.")
+        self.total_batches = len(progress)
+        self.logger.info(f"Starting run of {self.total_batches} batches.")
 
     def log_server_error(self):
         pass
