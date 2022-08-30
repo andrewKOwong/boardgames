@@ -284,6 +284,12 @@ class RetrieverLogger:
         self.logger.info(f"Retriever ran for {total_time}")
         self.logger.info("***ENDING RETRIEVER RUN***")
 
+    def log_resuming_from_file(self):
+        self.logger.info("Resuming from existing progress file.")
+
+    def log_new_progress_file(self):
+        self.logger.info("Creating new progress file.")
+
     def log_server_error(self):
         pass
 
