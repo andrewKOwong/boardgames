@@ -58,10 +58,13 @@ class Retriever:
             batch_size=1000,
             shuffle=True,
             random_seed=None):
+        # TODO log new run start
+        # TODO logger reset
         # Resume from an existing progress file
         # or create new progress object and batches.
         if self.check_progress_file_exists():
             progress = self.load_progress_file()
+            # TODO log resumption from existing file
         else:
             ids = [i for i in range(1, self.MAX_ID + 1)]
             if shuffle:
@@ -69,7 +72,9 @@ class Retriever:
                 random.shuffle(ids)
             progress = self.create_progress_object(ids, batch_size=batch_size)
             self.save_progress_file(progress)  # Initial save
+            # TODO log create new file
 
+        # TODO log total number of batches
         # Loop progress object, ignoring already complete batches.
         # Defensively deepcopy since we're altering during iteration.
         for idx, batch in enumerate(deepcopy(progress)):
@@ -104,12 +109,17 @@ class Retriever:
                     progress[idx] = batch
                     self._write_response(r, self.xml_dir + f'/{idx}.xml')
                     self.save_progress_file(progress)
+                    # TODO log batch statistics
+                    # TODO update cumulative data
+                    # TODO update estimated time for completion
                 elif r.status_code == 202:
                     batch[self.PROGRESS_KEY_STATUS] = \
                         self.PROGRESS_STATUS_QUEUED
                     progress[idx] = batch
                     self.save_progress_file(progress)
+                    # TODO log queued
                 else:
+                    # TODO log server error
                     print(r.text, '\n')
                     message = (
                         f"Response {r.status_code}. \n"
@@ -118,6 +128,7 @@ class Retriever:
                     )
                     print(message)
                     self._countdown(server_cooldown)
+        # TODO log total number of batches success/cued/incomplete, cumulative data
 
     def create_progress_object(
             self,
