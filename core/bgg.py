@@ -90,6 +90,7 @@ class Retriever:
                 # Try the request, but pause 10 min if no internet
                 while True:
                     try:
+                        log.log_batch_start(idx)
                         uri = self.generate_game_uri(
                             batch[self.PROGRESS_KEY_IDS]
                             )
@@ -262,6 +263,7 @@ class RetrieverLogger:
         self.time_start = None
         self.time_end = None
         self.total_batches = None
+        self.time_current_batch_start = None
 
         # Set up logger
         logger = logging.getLogger('retriever')
@@ -306,10 +308,30 @@ class RetrieverLogger:
         self.total_batches = len(progress)
         self.logger.info(f"Starting run of {self.total_batches} batches.")
 
-    def log_server_error(self):
-        pass
+    def log_batch_start(self, idx):
+        self.time_current_batch_start = time()
+        message = f"Attempting batch {idx+1} of {self.total_batches}..."
+        self.logger.info(message)
 
-    def log_batch_stats(self):
+    def log_downloaded_batch_stats(
+            self,
+            idx: int,
+            r: requests.Response) -> None:
+        # Time in seconds
+        batch_time = round(time() - self.time_current_batch_start, 1)
+        # Size in bytes
+        batch_size = len(r.content)
+        message = f"Batch {idx+1} of {self.total_batches} downloaded"
+        message += f" {batch_size/(10**6)} MB "
+        message += f" in {batch_time} seconds."
+        self.logger.info(message)
+        # TODO Log estimated time complete.
+        # TODO Add size of data to cumulative data count.
+        # TODO log batch statistics
+        # TODO update cumulative data
+        # TODO update estimated time for completion
+
+    def log_server_error(self):
         pass
 
     def reset(self):
