@@ -68,16 +68,16 @@ class Retriever:
         # Resume from an existing progress file
         # or create new progress object and batches.
         if self.check_progress_file_exists():
+            log.log_resuming_from_file()
             progress = self.load_progress_file()
-            # TODO log resumption from existing file
         else:
+            log.log_new_progress_file()
             ids = [i for i in range(1, self.MAX_ID + 1)]
             if shuffle:
                 random.seed(random_seed)
                 random.shuffle(ids)
             progress = self.create_progress_object(ids, batch_size=batch_size)
             self.save_progress_file(progress)  # Initial save
-            # TODO log create new file
 
         # TODO log total number of batches
         # Loop progress object, ignoring already complete batches.
