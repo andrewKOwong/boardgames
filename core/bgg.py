@@ -2,9 +2,11 @@ import os
 from pathlib import Path
 import json
 import random
+import logging
+import sys
 from copy import deepcopy
 from datetime import datetime
-from time import sleep
+from time import sleep, time
 import requests
 
 
@@ -239,15 +241,37 @@ class Retriever:
 
 class RetrieverLogger:
     """Convenience class for logging from Retriever."""
-    def __init__(self) -> None:
+    def __init__(self, log_file_path) -> None:
         self.time_start = None
         self.time_end = None
+        self.log_file_path = log_file_path
+
+        # Set up logger
+        logger = logging.getLogger('retriever')
+        logger.setLevel(logging.DEBUG)
+        formatter = logging.Formatter(
+            fmt="%(asctime)s | %(levelname)s: %(message)s"
+            )
+        console_logging = logging.StreamHandler(stream=sys.stdout)
+        console_logging.setLevel(logging.DEBUG)
+        console_logging.setFormatter(formatter)
+        logger.addHandler(console_logging)
+        file_logging = logging.FileHandler(self.log_file_path)
+        file_logging.setLevel(logging.DEBUG)
+        file_logging.setFormatter(formatter)
+        logger.addHandler(file_logging)
+        self.logger = logger
 
     def log_run_start(self):
-        pass
+        self.time_start = time()
+        self.logger.info("***STARTING RETRIEVER RUN***")
 
     def log_run_complete(self):
-        pass
+        self.time_end = time()
+        total_time = round(self.time_end - self.time_start)
+        total_time = self._seconds_to_time(total_time)
+        self.logger.info(f"Retriever ran for {total_time}")
+        self.logger.info("***ENDING RETRIEVER RUN***")
 
     def log_server_error(self):
         pass
@@ -261,3 +285,10 @@ class RetrieverLogger:
     def reset(self):
         """Reset internal variables at start of a retrieval run."""
         self.__init__(self)
+
+    def _seconds_to_time(self, seconds: int) -> str:
+        """Converts number of seconds to str in h m s format."""
+        h = seconds // 3600
+        m = (seconds % 3600) // 60
+        s = seconds % 60
+        return f"{0}h {0:02}m {0:02}s"
