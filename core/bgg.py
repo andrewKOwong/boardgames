@@ -62,8 +62,6 @@ class Retriever:
             batch_size=1000,
             shuffle=True,
             random_seed=None):
-        # TODO log new run start
-        # TODO logger reset
         log = self.logger
         log.reset()
         log.log_run_start()
