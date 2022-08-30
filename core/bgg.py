@@ -25,6 +25,7 @@ class Retriever:
     BASE_API = "https://boardgamegeek.com/xmlapi2/thing?"
     PATH_XML_DIR = 'xml'
     PATH_PROGRESS_FILE = 'progress.json'
+    PATH_LOG_FILE = 'retriever.log'
     PAUSE_TIME_NO_CONNECTION = 60
 
     def __init__(self, save_dir):
@@ -39,6 +40,9 @@ class Retriever:
         self.xml_dir = str(xml_dir)
         progress_path = save_dir / self.PATH_PROGRESS_FILE
         self.progress_path = str(progress_path)
+        log_file_path = save_dir / self.PATH_LOG_FILE
+        self.log_file_path = str(log_file_path)
+        self.logger = RetrieverLogger(self.log_file_path)
 
     def api_request(self, uri):
         """Make a request for board game geek data.
@@ -60,6 +64,9 @@ class Retriever:
             random_seed=None):
         # TODO log new run start
         # TODO logger reset
+        log = self.logger
+        log.reset()
+        log.log_run_start()
         # Resume from an existing progress file
         # or create new progress object and batches.
         if self.check_progress_file_exists():
