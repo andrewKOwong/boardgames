@@ -258,9 +258,9 @@ class Retriever:
 class RetrieverLogger:
     """Convenience class for logging from Retriever."""
     def __init__(self, log_file_path) -> None:
+        self.log_file_path = log_file_path
         self.time_start = None
         self.time_end = None
-        self.log_file_path = log_file_path
         self.total_batches = None
 
         # Set up logger
