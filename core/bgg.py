@@ -123,6 +123,7 @@ class Retriever:
                     log.batch_queued(idx)
                 else:
                     log.log_batch_error(idx, r)
+                    log.log_cooldown_start(server_cooldown, 'server')
                     self._countdown(server_cooldown)
         # TODO log total number of batches success/cued/incomplete, cumulative data
 
@@ -373,6 +374,19 @@ class RetrieverLogger:
         self.logger.warning(f"Response with error code {r.status_code}.")
         self.logger.warning("Response text follows:")
         self.logger.warning(f"{r.text}")
+
+    def log_cooldown_start(
+            self,
+            period: int,
+            type: str) -> None:
+        """Log the start of a cooldown period.
+
+        Args:
+            period (int): seconds for the cooldown
+            type (str): type of cooldown, e.g. batch, server
+        """
+        period = int(period)
+        self.logger.info(f"Starting {type} cooldown of {period} seconds.")
 
     def _seconds_to_time(self, seconds: int | float) -> str:
         """Converts number of seconds to str in h m s format."""
