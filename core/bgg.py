@@ -363,9 +363,10 @@ class RetrieverLogger:
         self.batch_sizes.append(batch_size)
         cumu_data_size = sum(self.batch_sizes)
         message = f"Elapsed: {self._seconds_to_time(time_elapsed)}"
-        message += f"--Remaining: {self._seconds_to_time(time_remaining)}"
-        message += "--Cumulative data size: "
-        message += f"{round(cumu_data_size/(10**6), 1)}"
+        message += f" | Remaining: {self._seconds_to_time(time_remaining)}"
+        self.logger.info(message)
+        message = "Cumulative data size: "
+        message += f"{round(cumu_data_size/(10**6), 1)} MB."
         self.logger.info(message)
 
     def log_server_error(self):
