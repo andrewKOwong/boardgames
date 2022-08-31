@@ -161,7 +161,10 @@ class Retriever:
         return progress
 
     def remove_progress_file(self) -> None:
-        """Deletes the progress file at the save path, regardless of existence."""
+        """Deletes the progress file at the save path.
+
+        Does not error if file is missing.
+        """
         Path(self.progress_path).unlink(missing_ok=True)
 
     def check_progress_file_exists(self) -> bool:
