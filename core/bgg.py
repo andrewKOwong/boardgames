@@ -293,18 +293,18 @@ class RetrieverLogger:
         # might get altered by testing, so getting a named
         # logger (rather than the root logger) should be preferred.
         logger = logging.getLogger('retriever')
-        logger.setLevel(logging.DEBUG)
+        logger.setLevel(logging.INFO)
         for handler in logger.handlers.copy():
             logger.removeHandler(handler)
         formatter = logging.Formatter(
             fmt="%(asctime)s | %(levelname)s: %(message)s"
             )
         console_logging = logging.StreamHandler(stream=sys.stdout)
-        console_logging.setLevel(logging.DEBUG)
+        console_logging.setLevel(logging.INFO)
         console_logging.setFormatter(formatter)
         logger.addHandler(console_logging)
         file_logging = logging.FileHandler(self.log_file_path)
-        file_logging.setLevel(logging.DEBUG)
+        file_logging.setLevel(logging.INFO)
         file_logging.setFormatter(formatter)
         logger.addHandler(file_logging)
         self.logger = logger
