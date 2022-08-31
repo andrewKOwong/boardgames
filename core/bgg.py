@@ -8,6 +8,7 @@ from copy import deepcopy
 from datetime import datetime
 from time import sleep, time
 from statistics import median
+from typing import Union
 import requests
 
 
@@ -444,7 +445,7 @@ class RetrieverLogger:
         message += f"{sum(self.batch_sizes)/(10**6)} MB"
         self.logger.info(message)
 
-    def _seconds_to_time(self, seconds: int | float) -> str:
+    def _seconds_to_time(self, seconds: Union[int, float]) -> str:
         """Converts number of seconds to str in h m s format."""
         # Coerce int for formatting
         seconds = int(seconds)
