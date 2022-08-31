@@ -114,13 +114,13 @@ class Retriever:
                     progress[idx] = batch
                     self._write_response(r, self.xml_dir + f'/{idx}.xml')
                     self.save_progress_file(progress)
-                    log.log_downloaded_batch_stats(idx, r)
+                    log.log_batch_downloaded(idx, r)
                 elif r.status_code == 202:
                     batch[self.PROGRESS_KEY_STATUS] = \
                         self.PROGRESS_STATUS_QUEUED
                     progress[idx] = batch
                     self.save_progress_file(progress)
-                    # TODO log queued
+                    log.batch_queued(idx)
                 else:
                     # TODO log server error
                     print(r.text, '\n')
@@ -341,7 +341,7 @@ class RetrieverLogger:
         message = f"Attempting batch {idx+1} of {self.total_batches}..."
         self.logger.info(message)
 
-    def log_downloaded_batch_stats(
+    def log_batch_downloaded(
             self,
             idx: int,
             r: requests.Response) -> None:
@@ -368,6 +368,10 @@ class RetrieverLogger:
         message = "Cumulative data size: "
         message += f"{round(cumu_data_size/(10**6), 1)} MB."
         self.logger.info(message)
+
+    def log_batch_queued(self, idx: int) -> None:
+        batch_n = idx + 1
+        self.logger(f"Batch {batch_n} queued at server for later download.")
 
     def log_server_error(self):
         pass
