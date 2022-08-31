@@ -64,7 +64,6 @@ class Retriever:
             shuffle=True,
             random_seed=None):
         log = self.logger
-        log.reset()
         log.log_run_start()
         # Resume from an existing progress file
         # or create new progress object and batches.
@@ -259,12 +258,8 @@ class RetrieverLogger:
     """Convenience class for logging from Retriever."""
     def __init__(self, log_file_path) -> None:
         self.log_file_path = log_file_path
-        self.time_start = None
-        self.time_end = None
-        self.total_batches = None
-        self.time_current_batch_start = None
-        self.batch_times = []  # in seconds rounded to one decimal
-        self.batch_sizes = []  # in bytes
+        # Reset internal variables used for logging
+        self.reset()
 
         # Set up logger
         logger = logging.getLogger('retriever')
@@ -281,6 +276,15 @@ class RetrieverLogger:
         file_logging.setFormatter(formatter)
         logger.addHandler(file_logging)
         self.logger = logger
+
+    def reset(self):
+        """Reset internal variables at start of a retrieval run."""
+        self.time_start = None
+        self.time_end = None
+        self.total_batches = None
+        self.time_current_batch_start = None
+        self.batch_times = []  # in seconds rounded to one decimal
+        self.batch_sizes = []  # in bytes
 
     def log_run_start(self):
         self.time_start = time()
@@ -343,10 +347,6 @@ class RetrieverLogger:
 
     def log_server_error(self):
         pass
-
-    def reset(self):
-        """Reset internal variables at start of a retrieval run."""
-        self.__init__(self.log_file_path)
 
     def _seconds_to_time(self, seconds: int) -> str:
         """Converts number of seconds to str in h m s format."""
