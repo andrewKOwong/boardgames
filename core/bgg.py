@@ -372,8 +372,10 @@ class RetrieverLogger:
     def log_server_error(self):
         pass
 
-    def _seconds_to_time(self, seconds: int) -> str:
+    def _seconds_to_time(self, seconds: int | float) -> str:
         """Converts number of seconds to str in h m s format."""
+        # Coerce int for formatting
+        seconds = int(seconds)
         h = seconds // 3600
         m = (seconds % 3600) // 60
         s = seconds % 60
