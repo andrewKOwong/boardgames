@@ -442,7 +442,7 @@ class RetrieverLogger:
         message += "{median(self.batch_times)}"
         self.logger.info(message)
         message = "Total data transferred: "
-        message += f"{sum(self.batch_sizes)/(10**6)} MB"
+        message += f"{round(sum(self.batch_sizes)/(10**6), 2)} MB"
         self.logger.info(message)
 
     def _seconds_to_time(self, seconds: Union[int, float]) -> str:
