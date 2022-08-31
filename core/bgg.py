@@ -434,12 +434,12 @@ class RetrieverLogger:
             self.logger.info(message)
 
         self.logger.info(
-            "If incomplete and cued batches exist,"
+            "If incomplete and queued batches exist,"
             " run retrieval again with same progress file."
             )
         # Statistics
         message = "Median download times (excluding waits): "
-        message += "{median(self.batch_times)}"
+        message += f"{median(self.batch_times)} s."
         self.logger.info(message)
         message = "Total data transferred: "
         message += f"{round(sum(self.batch_sizes)/(10**6), 2)} MB"
