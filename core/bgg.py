@@ -260,8 +260,13 @@ class RetrieverLogger:
     """
     def __init__(self, log_file_path) -> None:
         self.log_file_path = log_file_path
-        # Reset internal variables used for logging
-        self.reset()
+        self.time_start = None
+        self.time_end = None
+        self.total_batches = None
+        self.time_current_batch_start = None
+        self.batch_times = []  # in seconds rounded to one decimal
+        self.batch_sizes = []  # in bytes
+
         # It might be unlikely that client code starts more than
         # one instance of RetrieverLogger.
         # However, as getLogger('retriever') always returns the same logger,
@@ -303,15 +308,6 @@ class RetrieverLogger:
         file_logging.setFormatter(formatter)
         logger.addHandler(file_logging)
         self.logger = logger
-
-    def reset(self):
-        """Reset internal variables at start of a retrieval run."""
-        self.time_start = None
-        self.time_end = None
-        self.total_batches = None
-        self.time_current_batch_start = None
-        self.batch_times = []  # in seconds rounded to one decimal
-        self.batch_sizes = []  # in bytes
 
     def log_run_start(self):
         self.time_start = time()
