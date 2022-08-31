@@ -122,14 +122,7 @@ class Retriever:
                     self.save_progress_file(progress)
                     log.batch_queued(idx)
                 else:
-                    # TODO log server error
-                    print(r.text, '\n')
-                    message = (
-                        f"Response {r.status_code}. \n"
-                        f"See contents above. \n"
-                        f"Waiting {server_cooldown} seconds before continuing."
-                    )
-                    print(message)
+                    log.log_batch_error(idx, r)
                     self._countdown(server_cooldown)
         # TODO log total number of batches success/cued/incomplete, cumulative data
 
@@ -373,8 +366,13 @@ class RetrieverLogger:
         batch_n = idx + 1
         self.logger(f"Batch {batch_n} queued at server for later download.")
 
-    def log_server_error(self):
-        pass
+    def log_batch_error(
+            self,
+            idx: int,
+            r: requests.Response) -> None:
+        self.logger.warning(f"Response with error code {r.status_code}.")
+        self.logger.warning("Response text follows:")
+        self.logger.warning(f"{r.text}")
 
     def _seconds_to_time(self, seconds: int | float) -> str:
         """Converts number of seconds to str in h m s format."""
