@@ -124,6 +124,7 @@ class Retriever:
                     self.save_progress_file(progress)
                     log.batch_queued(idx)
                 else:
+
                     log.log_batch_error(idx, r)
                     log.log_cooldown_start(server_cooldown, 'server')
                     self._countdown(server_cooldown)
@@ -371,7 +372,7 @@ class RetrieverLogger:
         # Update and calculate cumulative times/sizes
         self.batch_times.append(batch_time)
         remaining_batches = self.total_batches - (batch_n)
-        time_elapsed = sum(self.batch_times)
+        time_elapsed = time() - self.time_start
         time_remaining = (median(self.batch_times) + batch_cooldown) \
             * remaining_batches
         self.batch_sizes.append(batch_size)
