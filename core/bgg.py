@@ -59,6 +59,7 @@ class Retriever:
 
     def retrieve_all(
             self,
+            batch_cooldown=10*60,
             server_cooldown=12*60*60,
             batch_size=1000,
             shuffle=True,
@@ -115,7 +116,7 @@ class Retriever:
                     progress[idx] = batch
                     self._write_response(r, self.xml_dir + f'/{idx}.xml')
                     self.save_progress_file(progress)
-                    log.log_batch_downloaded(idx, r)
+                    log.log_batch_downloaded(idx, r, batch_cooldown)
                 elif r.status_code == 202:
                     batch[self.PROGRESS_KEY_STATUS] = \
                         self.PROGRESS_STATUS_QUEUED
@@ -126,6 +127,11 @@ class Retriever:
                     log.log_batch_error(idx, r)
                     log.log_cooldown_start(server_cooldown, 'server')
                     self._countdown(server_cooldown)
+            # Cooldown between batches to not overload
+            # or get blocked by server.
+            log.log_cooldown_start(batch_cooldown, 'batch')
+            self._countdown(batch_cooldown)
+
         log.log_run_summary(
             progress,
             self.PROGRESS_KEY_STATUS,
@@ -133,7 +139,7 @@ class Retriever:
              self.PROGRESS_STATUS_QUEUED,
              self.PROGRESS_STATUS_INCOMPLETE]
             )
-        
+
     def create_progress_object(
             self,
             ids: list,
@@ -350,7 +356,8 @@ class RetrieverLogger:
     def log_batch_downloaded(
             self,
             idx: int,
-            r: requests.Response) -> None:
+            r: requests.Response,
+            batch_cooldown: int) -> None:
         # Batch number
         batch_n = idx + 1
         # Time in seconds
@@ -365,7 +372,8 @@ class RetrieverLogger:
         self.batch_times.append(batch_time)
         remaining_batches = self.total_batches - (batch_n)
         time_elapsed = sum(self.batch_times)
-        time_remaining = median(self.batch_times) * remaining_batches
+        time_remaining = (median(self.batch_times) + batch_cooldown) \
+            * remaining_batches
         self.batch_sizes.append(batch_size)
         cumu_data_size = sum(self.batch_sizes)
         message = f"--- Elapsed: {self._seconds_to_time(time_elapsed)}"
