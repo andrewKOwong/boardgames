@@ -342,7 +342,7 @@ class RetrieverLogger:
 
     def log_batch_start(self, idx):
         self.time_current_batch_start = time()
-        message = f"Attempting batch {idx+1} of {self.total_batches}..."
+        message = f"- Attempting batch {idx+1} of {self.total_batches}..."
         self.logger.info(message)
 
     def log_batch_downloaded(
@@ -355,8 +355,8 @@ class RetrieverLogger:
         batch_time = round(time() - self.time_current_batch_start, 1)
         # Size in bytes
         batch_size = len(r.content)
-        message = f"Batch {batch_n} of {self.total_batches} downloaded"
-        message += f" {batch_size/(10**6)} MB "
+        message = f"--- Batch {batch_n} of {self.total_batches} downloaded"
+        message += f" {batch_size/(10**3)} KB"
         message += f" in {batch_time} seconds."
         self.logger.info(message)
         # Update and calculate cumulative times/sizes
@@ -366,10 +366,10 @@ class RetrieverLogger:
         time_remaining = median(self.batch_times) * remaining_batches
         self.batch_sizes.append(batch_size)
         cumu_data_size = sum(self.batch_sizes)
-        message = f"Elapsed: {self._seconds_to_time(time_elapsed)}"
+        message = f"--- Elapsed: {self._seconds_to_time(time_elapsed)}"
         message += f" | Remaining: {self._seconds_to_time(time_remaining)}"
         self.logger.info(message)
-        message = "Cumulative data size: "
+        message = "--- Cumulative data size: "
         message += f"{round(cumu_data_size/(10**6), 1)} MB."
         self.logger.info(message)
 
