@@ -43,7 +43,6 @@ class Retriever:
         self.progress_path = str(progress_path)
         log_file_path = save_dir / self.PATH_LOG_FILE
         self.log_file_path = str(log_file_path)
-        self.logger = RetrieverLogger(self.log_file_path)
 
     def api_request(self, uri):
         """Make a request for board game geek data.
@@ -63,7 +62,7 @@ class Retriever:
             batch_size=1000,
             shuffle=True,
             random_seed=None):
-        log = self.logger
+        log = RetrieverLogger(self.log_file_path)
         log.log_run_start()
         # Resume from an existing progress file
         # or create new progress object and batches.
