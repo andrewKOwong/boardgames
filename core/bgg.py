@@ -254,15 +254,43 @@ class Retriever:
 
 
 class RetrieverLogger:
-    """Convenience class for logging from Retriever."""
+    """Convenience class for logging from Retriever.
+
+    Instantiate in `Retriever.retrieve_all` or related method calls.
+    """
     def __init__(self, log_file_path) -> None:
         self.log_file_path = log_file_path
         # Reset internal variables used for logging
         self.reset()
-
-        # Set up logger
+        # It might be unlikely that client code starts more than
+        # one instance of RetrieverLogger.
+        # However, as getLogger('retriever') always returns the same logger,
+        # handlers added here will be added for every RetrieverLogger
+        # instance, resulting in duplicate handlers.
+        #
+        # By a) first removing all handlers in this __init__ call
+        # and b) instantiating RetrieverLogger objects only inside
+        # an active Retriever.retrieve_all() (or similar method) call,
+        # we can try to avoid the situation where more than one
+        # RetrieverLogger is trying to access the same global
+        # 'retriever' logger simultaneously.
+        #
+        # I am unsure if this is the best solution,
+        # so this could be a target for refactoring.
+        #
+        # Note: logger.handlers (list) is technically not documented.
+        # However, it appears to be used by others such as:
+        # (1) Answer by leoluk https://stackoverflow.com/questions/3630774/
+        #   logging-remove-inspect-modify-handlers-configured-by-fileconfig
+        # (2) Answer by sfinkens https://stackoverflow.com/questions/19617355/
+        #   dynamically-changing-log-level-without-restarting-the-application
+        # The discussion in ref 1 notes that root level logger.handlers
+        # might get altered by testing, so getting a named
+        # logger (rather than the root logger) should be preferred.
         logger = logging.getLogger('retriever')
         logger.setLevel(logging.DEBUG)
+        for handler in logger.handlers.copy():
+            logger.removeHandler(handler)
         formatter = logging.Formatter(
             fmt="%(asctime)s | %(levelname)s: %(message)s"
             )
