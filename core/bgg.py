@@ -353,4 +353,4 @@ class RetrieverLogger:
         h = seconds // 3600
         m = (seconds % 3600) // 60
         s = seconds % 60
-        return f"{0}h {0:02}m {0:02}s"
+        return f"{h}h {m:02}m {s:02}s"
