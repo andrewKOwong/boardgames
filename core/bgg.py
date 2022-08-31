@@ -125,8 +125,14 @@ class Retriever:
                     log.log_batch_error(idx, r)
                     log.log_cooldown_start(server_cooldown, 'server')
                     self._countdown(server_cooldown)
-        # TODO log total number of batches success/cued/incomplete, cumulative data
-
+        log.log_run_summary(
+            progress,
+            self.PROGRESS_KEY_STATUS,
+            [self.PROGRESS_STATUS_COMPLETE,
+             self.PROGRESS_STATUS_QUEUED,
+             self.PROGRESS_STATUS_INCOMPLETE]
+            )
+        
     def create_progress_object(
             self,
             ids: list,
@@ -390,6 +396,53 @@ class RetrieverLogger:
         """
         period = int(period)
         self.logger.info(f"Starting {type} cooldown of {period} seconds.")
+
+    def log_run_summary(
+            self,
+            progress: dict,
+            status_key: str,
+            statuses: list) -> None:
+        """Log summary of a retrieval run.
+
+        Args:
+            progress (dict): a progress object from
+                Retriever.create_progress_object
+            status_key (str): field key for progress object
+                batch statuses i.e. Retriever.PROGRESS_KEY_STATUS
+            statuses (list): list of statuses to be tallied.
+                i.e. Retriever.PROGRESS* constants
+        """
+        # Total time elapsed
+        self.time_end = time()
+        elapsed = int(self.time_end - self.time_start)
+        message = f"Total elapsed time was {self._seconds_to_time(elapsed)}"
+        self.logger.info(message)
+        # Batch status summary
+        message = f"Total batches was {self.total_batches}."
+        self.logger.info(message)
+        # Batch status tallies
+        tallies = {}
+        for status in statuses:
+            tallies[status] = 0
+        for batch in progress:
+            if batch[status_key] in statuses:
+                tallies[batch[status_key]] += 1
+        for key in tallies.keys():
+            message = f"Status '{key}' count: "
+            message += f"{tallies[key]}."
+            self.logger.info(message)
+
+        self.logger.info(
+            "If incomplete and cued batches exist,"
+            " run retrieval again with same progress file."
+            )
+        # Statistics
+        message = "Median download times (excluding waits): "
+        message += "{median(self.batch_times)}"
+        self.logger.info(message)
+        message = "Total data transferred: "
+        message += f"{sum(self.batch_sizes)/(10**6)} MB"
+        self.logger.info(message)
 
     def _seconds_to_time(self, seconds: int | float) -> str:
         """Converts number of seconds to str in h m s format."""
