@@ -346,7 +346,7 @@ class RetrieverLogger:
 
     def reset(self):
         """Reset internal variables at start of a retrieval run."""
-        self.__init__(self)
+        self.__init__(self.log_file_path)
 
     def _seconds_to_time(self, seconds: int) -> str:
         """Converts number of seconds to str in h m s format."""
