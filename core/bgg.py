@@ -32,9 +32,17 @@ class Retriever:
     PATH_LOG_FILE = 'retriever.log'
     PAUSE_TIME_NO_CONNECTION = 60
 
-    # TODO typing
-    def __init__(self, save_dir):
-        # TODO add docstring
+    def __init__(self, save_dir: str) -> None:
+        """Initialize Retriever with a dir for saving data.
+
+        Args:
+            save_dir (str): directory path for saving downloaded data,
+                log files, progress tracking files, etc.
+
+        Raises:
+            FileNotFoundError: if save_dir doesn't exist
+            NotADirectoryError: if save_dir isn't a directory
+        """
         save_dir = Path(save_dir)
         if not save_dir.exists():
             raise FileNotFoundError(f"Dir {str(save_dir)} does not exist.")
