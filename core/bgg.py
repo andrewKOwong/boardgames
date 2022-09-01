@@ -32,7 +32,9 @@ class Retriever:
     PATH_LOG_FILE = 'retriever.log'
     PAUSE_TIME_NO_CONNECTION = 60
 
+    # TODO typing
     def __init__(self, save_dir):
+        # TODO add docstring
         save_dir = Path(save_dir)
         if not save_dir.exists():
             raise FileNotFoundError(f"Dir {str(save_dir)} does not exist.")
@@ -47,6 +49,7 @@ class Retriever:
         log_file_path = save_dir / self.PATH_LOG_FILE
         self.log_file_path = str(log_file_path)
 
+    # TODO typing
     def retrieve_all(
             self,
             batch_cooldown=10*60,
@@ -54,6 +57,7 @@ class Retriever:
             batch_size=1000,
             shuffle=True,
             random_seed=None):
+        # TODO add docstring
         log = RetrieverLogger(self.log_file_path)
         log.log_run_start()
         # Resume from an existing progress file
@@ -142,6 +146,7 @@ class Retriever:
              self.PROGRESS_STATUS_INCOMPLETE]
             )
 
+    # TODO typing
     def api_request(self, uri):
         """Make a request for board game geek data.
 
