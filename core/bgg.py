@@ -13,6 +13,12 @@ import requests
 
 
 class Retriever:
+    """TODO Summar of Retriever.
+
+    Initialize with a directory path for saving data.
+    Calling Retriever.retrieve_all is the workhorse func for getting all the data.
+    Talk about constants?
+    """
     MAX_ID = 362383
     PROGRESS_STATUS_COMPLETE = 'complete'
     PROGRESS_STATUS_INCOMPLETE = 'incomplete'
