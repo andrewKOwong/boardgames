@@ -47,18 +47,6 @@ class Retriever:
         log_file_path = save_dir / self.PATH_LOG_FILE
         self.log_file_path = str(log_file_path)
 
-    def api_request(self, uri):
-        """Make a request for board game geek data.
-
-        Args:
-            uri (str): String URI for accessing the API.
-
-        Returns:
-            requests.models.Response: response from the HTTP request.
-        """
-        r = requests.get(uri)
-        return r
-
     def retrieve_all(
             self,
             batch_cooldown=10*60,
@@ -154,49 +142,17 @@ class Retriever:
              self.PROGRESS_STATUS_INCOMPLETE]
             )
 
-    def _create_progress_object(
-            self,
-            ids: list,
-            batch_size: int = 1000) -> list:
-        """Batchify list of ids, returning progress object with statuses per batch.
+    def api_request(self, uri):
+        """Make a request for board game geek data.
 
         Args:
-            ids (list): BGG thing ids e.g. board games.
-            batch_size (int, optional): Defaults to 1000.
+            uri (str): String URI for accessing the API.
 
         Returns:
-            list: of dicts containing batches of ids and status info
+            requests.models.Response: response from the HTTP request.
         """
-
-        progress = [
-            {self.PROGRESS_KEY_IDS: ids[i: i+batch_size],
-             self.PROGRESS_KEY_STATUS: self.PROGRESS_STATUS_INCOMPLETE,
-             self.PROGRESS_KEY_LAST_ACCESSED: ''}
-            for i in range(0, len(ids), batch_size)]
-
-        return progress
-
-    def _save_progress_file(self, progress: dict) -> None:
-        """Takes the progress dict and saves it to the preloaded save path."""
-        with open(self.progress_path, 'w') as f:
-            json.dump(progress, f, indent=4)
-
-    def _load_progress_file(self) -> dict:
-        """Returns a dict from save path json file."""
-        with open(self.progress_path, 'r') as f:
-            progress = json.load(f)
-        return progress
-
-    def remove_progress_file(self) -> None:
-        """Deletes the progress file at the save path.
-
-        Does not error if file is missing.
-        """
-        Path(self.progress_path).unlink(missing_ok=True)
-
-    def _check_progress_file_exists(self) -> bool:
-        """True if save file already exists."""
-        return os.path.isfile(self.progress_path)
+        r = requests.get(uri)
+        return r
 
     def generate_game_uri(
         self,
@@ -251,6 +207,50 @@ class Retriever:
         # i.e. [1,2] -> '1,2'
         uri += ','.join([str(i) for i in ids])
         return uri
+
+    def remove_progress_file(self) -> None:
+        """Deletes the progress file at the save path.
+
+        Does not error if file is missing.
+        """
+        Path(self.progress_path).unlink(missing_ok=True)
+
+    def _create_progress_object(
+            self,
+            ids: list,
+            batch_size: int = 1000) -> list:
+        """Batchify list of ids, returning progress object with statuses per batch.
+
+        Args:
+            ids (list): BGG thing ids e.g. board games.
+            batch_size (int, optional): Defaults to 1000.
+
+        Returns:
+            list: of dicts containing batches of ids and status info
+        """
+
+        progress = [
+            {self.PROGRESS_KEY_IDS: ids[i: i+batch_size],
+             self.PROGRESS_KEY_STATUS: self.PROGRESS_STATUS_INCOMPLETE,
+             self.PROGRESS_KEY_LAST_ACCESSED: ''}
+            for i in range(0, len(ids), batch_size)]
+
+        return progress
+
+    def _save_progress_file(self, progress: dict) -> None:
+        """Takes the progress dict and saves it to the preloaded save path."""
+        with open(self.progress_path, 'w') as f:
+            json.dump(progress, f, indent=4)
+
+    def _load_progress_file(self) -> dict:
+        """Returns a dict from save path json file."""
+        with open(self.progress_path, 'r') as f:
+            progress = json.load(f)
+        return progress
+
+    def _check_progress_file_exists(self) -> bool:
+        """True if save file already exists."""
+        return os.path.isfile(self.progress_path)
 
     def _countdown(self, time_to_sleep: int) -> None:
         """Prints a countdown timer."""
