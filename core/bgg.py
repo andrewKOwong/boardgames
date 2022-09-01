@@ -12,10 +12,6 @@ from typing import Union
 import requests
 
 
-def xml_collater():
-    pass
-
-
 class Retriever:
     MAX_ID = 362383
     PROGRESS_STATUS_COMPLETE = 'complete'
