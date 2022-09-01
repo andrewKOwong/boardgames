@@ -70,17 +70,17 @@ class Retriever:
         log.log_run_start()
         # Resume from an existing progress file
         # or create new progress object and batches.
-        if self.check_progress_file_exists():
+        if self._check_progress_file_exists():
             log.log_resuming_from_file()
-            progress = self.load_progress_file()
+            progress = self._load_progress_file()
         else:
             log.log_new_progress_file()
             ids = [i for i in range(1, self.MAX_ID + 1)]
             if shuffle:
                 random.seed(random_seed)
                 random.shuffle(ids)
-            progress = self.create_progress_object(ids, batch_size=batch_size)
-            self.save_progress_file(progress)  # Initial save
+            progress = self._create_progress_object(ids, batch_size=batch_size)
+            self._save_progress_file(progress)  # Initial save
 
         log.log_total_batches(progress)
         # Loop progress object, ignoring already complete batches.
@@ -117,13 +117,13 @@ class Retriever:
                         self.PROGRESS_STATUS_COMPLETE
                     progress[idx] = batch
                     self._write_response(r, self.xml_dir + f'/{idx}.xml')
-                    self.save_progress_file(progress)
+                    self._save_progress_file(progress)
                     log.log_batch_downloaded(idx, r, batch_cooldown)
                 elif r.status_code == 202:
                     batch[self.PROGRESS_KEY_STATUS] = \
                         self.PROGRESS_STATUS_QUEUED
                     progress[idx] = batch
-                    self.save_progress_file(progress)
+                    self._save_progress_file(progress)
                     log.batch_queued(idx)
                 else:
                     will_cooldown = True
@@ -154,7 +154,7 @@ class Retriever:
              self.PROGRESS_STATUS_INCOMPLETE]
             )
 
-    def create_progress_object(
+    def _create_progress_object(
             self,
             ids: list,
             batch_size: int = 1000) -> list:
@@ -176,12 +176,12 @@ class Retriever:
 
         return progress
 
-    def save_progress_file(self, progress: dict) -> None:
+    def _save_progress_file(self, progress: dict) -> None:
         """Takes the progress dict and saves it to the preloaded save path."""
         with open(self.progress_path, 'w') as f:
             json.dump(progress, f, indent=4)
 
-    def load_progress_file(self) -> dict:
+    def _load_progress_file(self) -> dict:
         """Returns a dict from save path json file."""
         with open(self.progress_path, 'r') as f:
             progress = json.load(f)
@@ -194,7 +194,7 @@ class Retriever:
         """
         Path(self.progress_path).unlink(missing_ok=True)
 
-    def check_progress_file_exists(self) -> bool:
+    def _check_progress_file_exists(self) -> bool:
         """True if save file already exists."""
         return os.path.isfile(self.progress_path)
 
@@ -357,7 +357,7 @@ class RetrieverLogger:
 
         Args:
             progress (dict): a progress object, which is a list of dicts
-                from Retriever.create_progress_object()
+                from Retriever._create_progress_object()
         """
         self.total_batches = len(progress)
         self.logger.info(f"Starting run of {self.total_batches} batches.")
@@ -431,7 +431,7 @@ class RetrieverLogger:
 
         Args:
             progress (dict): a progress object from
-                Retriever.create_progress_object
+                Retriever._create_progress_object
             status_key (str): field key for progress object
                 batch statuses i.e. Retriever.PROGRESS_KEY_STATUS
             statuses (list): list of statuses to be tallied.
