@@ -124,10 +124,21 @@ class Retriever:
                     self.save_progress_file(progress)
                     log.batch_queued(idx)
                 else:
-
+                    will_cooldown = True
+                    # There is a 502 condition where the server error
+                    # recommends trying again in 30 seconds.
+                    # In that case, skip long server cooldown.
+                    if (r.status_code == 502) and \
+                       (r.text.find("try again in 30 seconds") != 1):
+                        will_cooldown = False
                     log.log_batch_error(idx, r)
-                    log.log_cooldown_start(server_cooldown, 'server')
-                    self._countdown(server_cooldown)
+                    # For all other error codes,
+                    # cooldown a longer time in case it means
+                    # the server is doing some sort of blocking
+                    # without notifying us.
+                    if will_cooldown:
+                        log.log_cooldown_start(server_cooldown, 'server')
+                        self._countdown(server_cooldown)
             # Cooldown between batches to not overload
             # or get blocked by server.
             log.log_cooldown_start(batch_cooldown, 'batch')
