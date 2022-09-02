@@ -421,13 +421,6 @@ class RetrieverLogger:
         self.time_start = time()
         self.logger.info("***STARTING RETRIEVER RUN***")
 
-    def log_run_complete(self):
-        self.time_end = time()
-        total_time = round(self.time_end - self.time_start)
-        total_time = self._seconds_to_time(total_time)
-        self.logger.info(f"Retriever ran for {total_time}")
-        self.logger.info("***ENDING RETRIEVER RUN***")
-
     def log_resuming_from_file(self) -> None:
         """Log when resuming from existing progress file."""
         self.logger.info("Resuming from existing progress file.")
