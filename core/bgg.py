@@ -70,11 +70,11 @@ class Retriever:
 
     def retrieve_all(
             self,
-            batch_cooldown=10*60,
-            server_cooldown=12*60*60,
-            batch_size=1000,
-            shuffle=True,
-            random_seed=None,
+            batch_cooldown: int = 10*60,
+            server_cooldown: int = 12*60*60,
+            batch_size: int = 1000,
+            shuffle: bool = True,
+            random_seed: int = None,
             max_id: int = None) -> None:
         """Retrieve all board games from Board Game Geek.
 
