@@ -363,6 +363,7 @@ class RetrieverLogger:
     """Convenience class for logging from Retriever.
 
     Instantiate in `Retriever.retrieve_all` or related method calls.
+    Use RetrieverLogger.log_run_start call to assign self.time_start.
     """
     def __init__(self, log_file_path) -> None:
         self.log_file_path = log_file_path
@@ -415,7 +416,8 @@ class RetrieverLogger:
         logger.addHandler(file_logging)
         self.logger = logger
 
-    def log_run_start(self):
+    def log_run_start(self) -> None:
+        """Run at the start of a retrieval run to set up self.time_start."""
         self.time_start = time()
         self.logger.info("***STARTING RETRIEVER RUN***")
 
@@ -426,14 +428,16 @@ class RetrieverLogger:
         self.logger.info(f"Retriever ran for {total_time}")
         self.logger.info("***ENDING RETRIEVER RUN***")
 
-    def log_resuming_from_file(self):
+    def log_resuming_from_file(self) -> None:
+        """Log when resuming from existing progress file."""
         self.logger.info("Resuming from existing progress file.")
 
-    def log_new_progress_file(self):
+    def log_new_progress_file(self) -> None:
+        """Log when creating a new progress file."""
         self.logger.info("Creating new progress file.")
 
     def log_total_batches(self, progress: list[dict]) -> None:
-        """Log number of batches in a progress object."
+        """Log total batches progress file created/loaded."
 
         Args:
             progress (dict): a progress object, which is a list of dicts
@@ -443,6 +447,7 @@ class RetrieverLogger:
         self.logger.info(f"Starting run of {self.total_batches} batches.")
 
     def log_batch_start(self, idx):
+        """Log at the start of a batch request attempt."""
         self.time_current_batch_start = time()
         message = f"- Attempting batch {idx+1} of {self.total_batches}..."
         self.logger.info(message)
@@ -452,6 +457,13 @@ class RetrieverLogger:
             idx: int,
             r: requests.Response,
             batch_cooldown: int) -> None:
+        """Log upon successful batch data download.
+
+        Args:
+            idx (int): Batch index.
+            r (requests.Response): Request response for that batch.
+            batch_cooldown (int): Upcoming batch cooldown duration in seconds.
+        """
         # Batch number
         batch_n = idx + 1
         # Time in seconds
@@ -478,6 +490,11 @@ class RetrieverLogger:
         self.logger.info(message)
 
     def log_batch_queued(self, idx: int) -> None:
+        """Log when a batch is queued on the server.
+
+        Args:
+            idx (int): Batch index.
+        """
         batch_n = idx + 1
         self.logger(f"Batch {batch_n} queued at server for later download.")
 
@@ -485,6 +502,14 @@ class RetrieverLogger:
             self,
             idx: int,
             r: requests.Response) -> None:
+        """Log when server gives an error code in the response.
+
+        Prints the code and the text of the response message.
+
+        Args:
+            idx (int): Batch index.
+            r (requests.Response): Request response for that batch
+        """
         self.logger.warning(f"Response with error code {r.status_code}.")
         self.logger.warning("Response text follows:")
         self.logger.warning(f"{r.text}")
@@ -496,8 +521,9 @@ class RetrieverLogger:
         """Log the start of a cooldown period.
 
         Args:
-            period (int): seconds for the cooldown
-            type (str): type of cooldown, e.g. batch, server
+            period (int): Seconds for the cooldown.
+            type (str): Type of cooldown (e.g. 'batch', 'server') that gets
+                included in the log message.
         """
         period = int(period)
         self.logger.info(f"Starting {type} cooldown of {period} seconds.")
@@ -510,12 +536,12 @@ class RetrieverLogger:
         """Log summary of a retrieval run.
 
         Args:
-            progress (dict): a progress object from
-                Retriever._create_progress_object
-            status_key (str): field key for progress object
+            progress (dict): A progress object from
+                Retriever._create_progress_object.
+            status_key (str): Field key for progress object.
                 batch statuses i.e. Retriever.PROGRESS_KEY_STATUS
-            statuses (list): list of statuses to be tallied.
-                i.e. Retriever.PROGRESS* constants
+            statuses (list): List of statuses to be tallied.
+                i.e. Retriever.PROGRESS* constants.
         """
         # Total time elapsed
         self.time_end = time()
