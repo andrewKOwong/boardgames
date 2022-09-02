@@ -74,7 +74,8 @@ class Retriever:
             server_cooldown=12*60*60,
             batch_size=1000,
             shuffle=True,
-            random_seed=None) -> None:
+            random_seed=None,
+            max_id: int = None) -> None:
         """Retrieve all board games from Board Game Geek.
 
         By default, gets board games in randomized batches.
@@ -125,7 +126,13 @@ class Retriever:
                 randomized order. Defaults to True.
             random_seed (int, optional): Seed for randomizing order, supplied
                 to random.seed(). Defaults to None.
+            max_id (int, optional): Provide a max_id to download up to,
+                otherwise uses preset self.MAX_ID.
         """
+        # Set max_id if not provided
+        if max_id is None:
+            max_id = self.MAX_ID
+
         # RetrieverLogger is a helper class that tracks
         # relevant retrieval statistics while logging.
         log = RetrieverLogger(self.log_file_path)
@@ -137,7 +144,7 @@ class Retriever:
             progress = self._load_progress_file()
         else:
             log.log_new_progress_file()
-            ids = [i for i in range(1, self.MAX_ID + 1)]
+            ids = [i for i in range(1, max_id + 1)]
             if shuffle:
                 random.seed(random_seed)
                 random.shuffle(ids)
