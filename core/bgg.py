@@ -210,7 +210,7 @@ class Retriever:
             self._countdown(batch_cooldown)
 
         # End of run logging
-        log.log_run_summary(
+        log.log_run_complete_summary(
             progress,
             self.PROGRESS_KEY_STATUS,
             [self.PROGRESS_STATUS_COMPLETE,
@@ -528,12 +528,12 @@ class RetrieverLogger:
         period = int(period)
         self.logger.info(f"Starting {type} cooldown of {period} seconds.")
 
-    def log_run_summary(
+    def log_run_complete_summary(
             self,
             progress: list,
             status_key: str,
             statuses: list) -> None:
-        """Log summary of a retrieval run.
+        """Log summary upon completion of a retrieval run.
 
         Args:
             progress (dict): A progress object from
@@ -574,6 +574,7 @@ class RetrieverLogger:
         message = "Total data transferred: "
         message += f"{round(sum(self.batch_sizes)/(10**6), 2)} MB"
         self.logger.info(message)
+        self.logger.info("***ENDING RETRIEVER RUN***")
 
     def _seconds_to_time(self, seconds: Union[int, float]) -> str:
         """Converts number of seconds to str in h m s format."""
