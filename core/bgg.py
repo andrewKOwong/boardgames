@@ -70,8 +70,8 @@ class Retriever:
 
     def retrieve_all(
             self,
-            batch_cooldown: int = 10*60,
-            server_cooldown: int = 12*60*60,
+            batch_cooldown: int = 5*60,
+            server_cooldown: int = 6*60*60,
             batch_size: int = 1000,
             shuffle: bool = True,
             random_seed: int = None,
