@@ -23,6 +23,7 @@ class MockResponse:
 
 
 class MockServer:
+    """Use MockServer.get_response as monkeypatch for requests.get"""
     def __init__(self) -> None:
         # This is a cyclic iterator that will
         # yield items in a loop when calling next() on it
@@ -88,4 +89,5 @@ def test_retrieve_all_progress(monkeypatch, tmp_path):
     test_statuses = [e[retriever.PROGRESS_KEY_STATUS] for e in progress]
     assert test_statuses == correct_statuses
 
+    # Print the progress object for convenience in inspection
     print(progress)
