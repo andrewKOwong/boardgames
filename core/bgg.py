@@ -496,7 +496,9 @@ class RetrieverLogger:
             idx (int): Batch index.
         """
         batch_n = idx + 1
-        self.logger(f"Batch {batch_n} queued at server for later download.")
+        self.logger.info(
+            f"Batch {batch_n} queued at server for later download."
+            )
 
     def log_batch_error(
             self,
