@@ -2,46 +2,75 @@ import requests
 import json
 from math import ceil
 from pathlib import Path
+from itertools import cycle
 
 from core.bgg import Retriever
 
 
 class MockResponse:
-    def __init__(self, status_code):
+    """Mock of requests.Response"""
+    def __init__(self, status_code: int, text: str):
+        """Init MockResponse with desired values.
+
+        Args:
+            status_code (int): mocking requests.Response.status_code.
+            text (str): mocking requests.Response.text. Will also be
+                converted to a bytes object mocking requests.Response.content.
+        """
         self.status_code = status_code
+        self.text = text
+        self.content = bytes(text, encoding='utf-8')
 
 
-# Testing if a mock server returns all 200 statuses
-def test_200(monkeypatch, tmp_path):
+class MockServer:
+    def __init__(self) -> None:
+        # This is a cyclic iterator that will
+        # yield items in a loop when calling next() on it
+        self.response_cycle = cycle([
+            (200, 'DOWNLOADED'),
+            (202, 'QUEUED'),
+            (429, 'RATE_LIMITED'),
+            (502, 'try again in 30 seconds'),
+            (502, 'OTHER ERROR'),
+            (503, 'SERVICE UNAVAILABLE')
+            ])
+
+    def get_response(self, uri) -> MockResponse:
+        """Get the next MockReponse in the cycle.
+
+        Returns:
+            MockResponse: mocking request.Response, with .status_code,
+                .text, and .content.
+        """
+        code, text = next(self.response_cycle)
+        return MockResponse(code, text)
+
+
+def test_retrieve_all_progress(monkeypatch, tmp_path):
     TEST_BATCH_SIZE = 2
-    TEST_MAX_ID = 10
-    TEST_DIR = tmp_path  # system temporary files
-    TEST_STATUS_CODE = 200
+    TEST_MAX_ID = 13
+    TEST_BATCH_COOLDOWN = 2
+    TEST_SERVER_COOLDOWN = 3
+    # On Linux, tmp_path for most recent test should be at
+    # /tmp/pytest-of-<user>/pytest-current
+    TEST_DIR = tmp_path
     TEST_RANDOM_SEED = 7
-    TEST_STATUS_STR = 'complete'
-    # Manually change this to true if you want to inspect
-    # the progress file.
-    # This will dump the files into the stated directory,
-    # as well as moving the progress file into a 'tmp_prog.json'
-    # at the end of this test.
-    INSPECT_PROGRESS_FILE = False
-    TEST_DIR_INSPECT = Path('./exp')
-    if INSPECT_PROGRESS_FILE:
-        TEST_DIR = TEST_DIR_INSPECT
 
     # Patch out requests.get
-    def mock_get(url):
-        return MockResponse(status_code=TEST_STATUS_CODE)
-
-    monkeypatch.setattr(requests, 'get', mock_get)
+    server = MockServer()
+    monkeypatch.setattr(requests, 'get', server.get_response)
 
     # Run retrieve all, but with a smaller max id,
     # so a smaller amount of items are returned.
     retriever = Retriever(save_dir=TEST_DIR)
-    retriever.MAX_ID = TEST_MAX_ID
-    retriever.retrieve_all(batch_size=TEST_BATCH_SIZE,
-                           shuffle=True,
-                           random_seed=TEST_RANDOM_SEED)
+    retriever.retrieve_all(
+        batch_size=TEST_BATCH_SIZE,
+        shuffle=True,
+        random_seed=TEST_RANDOM_SEED,
+        max_id=TEST_MAX_ID,
+        batch_cooldown=TEST_BATCH_COOLDOWN,
+        server_cooldown=TEST_SERVER_COOLDOWN
+    )
 
     # Reload from the progress file for testing
     progress_path = Path(retriever.progress_path)
@@ -49,67 +78,14 @@ def test_200(monkeypatch, tmp_path):
     # Test the number of batches
     assert len(progress) == ceil(TEST_MAX_ID/TEST_BATCH_SIZE)
     # Test the first batch ids
-    assert progress[0][retriever.PROGRESS_KEY_IDS] == [9, 4]
+    assert progress[0][retriever.PROGRESS_KEY_IDS] == [4, 11]
     # Test the last batch ids
-    assert progress[-1][retriever.PROGRESS_KEY_IDS] == [3, 6]
+    assert progress[-1][retriever.PROGRESS_KEY_IDS] == [6]
     # Test all status are correct
-    statuses = set([e[retriever.PROGRESS_KEY_STATUS] for e in progress])
-    assert len(statuses) == 1
-    assert statuses.pop() == TEST_STATUS_STR
+    correct_statuses = [
+        'complete', 'queued', 'incomplete',
+        'incomplete', 'incomplete', 'incomplete', 'complete']
+    test_statuses = [e[retriever.PROGRESS_KEY_STATUS] for e in progress]
+    assert test_statuses == correct_statuses
 
-    # Swap out the progress file so you can inspect it without
-    # reloading the func
-    if INSPECT_PROGRESS_FILE:
-        progress_path.replace(progress_path.parent / 'tmp_prog.json')
-
-
-# Testing if a mock server returns all 202 statuses
-def test_202(monkeypatch, tmp_path):
-    TEST_BATCH_SIZE = 2
-    TEST_MAX_ID = 10
-    TEST_DIR = tmp_path  # system temporary files
-    TEST_STATUS_CODE = 202
-    TEST_RANDOM_SEED = 7
-    TEST_STATUS_STR = 'queued'
-    # Manually change this to true if you want to inspect
-    # the progress file.
-    # This will dump the files into the stated directory,
-    # as well as moving the progress file into a 'tmp_prog.json'
-    # at the end of this test.
-    INSPECT_PROGRESS_FILE = False
-    TEST_DIR_INSPECT = Path('./exp')
-    if INSPECT_PROGRESS_FILE:
-        TEST_DIR = TEST_DIR_INSPECT
-
-    # Patch out requests.get
-    def mock_get(url):
-        return MockResponse(status_code=TEST_STATUS_CODE)
-
-    monkeypatch.setattr(requests, 'get', mock_get)
-
-    # Run retrieve all, but with a smaller max id,
-    # so a smaller amount of items are returned.
-    retriever = Retriever(save_dir=TEST_DIR)
-    retriever.MAX_ID = TEST_MAX_ID
-    retriever.retrieve_all(batch_size=TEST_BATCH_SIZE,
-                           shuffle=True,
-                           random_seed=TEST_RANDOM_SEED)
-
-    # Reload from the progress file for testing
-    progress_path = Path(retriever.progress_path)
-    progress = json.loads(progress_path.read_text())
-    # Test the number of batches
-    assert len(progress) == ceil(TEST_MAX_ID/TEST_BATCH_SIZE)
-    # Test the first batch ids
-    assert progress[0][retriever.PROGRESS_KEY_IDS] == [9, 4]
-    # Test the last batch ids
-    assert progress[-1][retriever.PROGRESS_KEY_IDS] == [3, 6]
-    # Test all status are correct
-    statuses = set([e[retriever.PROGRESS_KEY_STATUS] for e in progress])
-    assert len(statuses) == 1
-    assert statuses.pop() == TEST_STATUS_STR
-
-    # Swap out the progress file so you can inspect it without
-    # reloading the func
-    if INSPECT_PROGRESS_FILE:
-        progress_path.replace(progress_path.parent / 'tmp_prog.json')
+    print(progress)
