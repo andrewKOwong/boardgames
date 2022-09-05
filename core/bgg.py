@@ -204,6 +204,12 @@ class Retriever:
                        (r.text.find("try again in 30 seconds") != 1):
                         will_cooldown = False
                     log.log_batch_error(idx, r)
+
+                    batch[self.PROGRESS_KEY_STATUS] = \
+                        self.PROGRESS_STATUS_INCOMPLETE
+                    progress[idx] = batch
+                    self._save_progress_file(progress)
+
                     # For all other error codes,
                     # cooldown a longer time in case it means
                     # the server is doing some sort of blocking
