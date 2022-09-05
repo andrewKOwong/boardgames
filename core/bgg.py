@@ -157,6 +157,7 @@ class Retriever:
         for idx, batch in enumerate(deepcopy(progress)):
             if batch[self.PROGRESS_KEY_STATUS] == \
                     self.PROGRESS_STATUS_COMPLETE:
+                log.log_batch_already_complete(idx)
                 continue
             else:
                 # Try the request, but pause if no internet
@@ -456,6 +457,10 @@ class RetrieverLogger:
         """Log at the start of a batch request attempt."""
         self.time_current_batch_start = time()
         message = f"- Attempting batch {idx+1} of {self.total_batches}..."
+        self.logger.info(message)
+
+    def log_batch_already_complete(self, idx):
+        message = f"Batch {idx+1} already downloaded."
         self.logger.info(message)
 
     def log_batch_downloaded(
