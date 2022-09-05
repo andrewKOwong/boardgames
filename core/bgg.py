@@ -193,7 +193,7 @@ class Retriever:
                         self.PROGRESS_STATUS_QUEUED
                     progress[idx] = batch
                     self._save_progress_file(progress)
-                    log.batch_queued(idx)
+                    log.log_batch_queued(idx)
                 else:
                     will_cooldown = True
                     # There is a 502 condition where the server error
