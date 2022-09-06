@@ -21,7 +21,7 @@ parser.add_argument(
     metavar='',
     dest='batch_size',
     type=int,
-    default=300,
+    default=500,
     help="Number of ids to sent per API request.")
 
 parser.add_argument(
