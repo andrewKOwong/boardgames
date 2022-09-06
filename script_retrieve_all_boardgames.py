@@ -9,6 +9,7 @@ parser = argparse.ArgumentParser(
 
 parser.add_argument(
     '--save-dir',
+    metavar='',
     dest='save_dir',
     type=str,
     default='./data',
@@ -16,6 +17,7 @@ parser.add_argument(
 
 parser.add_argument(
     '--batch-size',
+    metavar='',
     dest='batch_size',
     type=int,
     default=300,
@@ -23,6 +25,7 @@ parser.add_argument(
 
 parser.add_argument(
     '--batch-cooldown',
+    metavar='',
     dest='batch_cooldown',
     type=int,
     default=5*60,
@@ -30,6 +33,7 @@ parser.add_argument(
 
 parser.add_argument(
     '--server-cooldown',
+    metavar='',
     dest='server_cooldown',
     type=int,
     default=3*60*60,
@@ -38,6 +42,7 @@ parser.add_argument(
 
 parser.add_argument(
     '--max-id',
+    metavar='',
     dest='max_id',
     type=int,
     default=None,
@@ -54,6 +59,7 @@ parser.add_argument(
 
 parser.add_argument(
     '--random-seed',
+    metavar='',
     dest='random_seed',
     type=int,
     default=None,
