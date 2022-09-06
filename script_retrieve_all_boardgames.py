@@ -4,7 +4,8 @@ from core.bgg import Retriever
 
 # Use command line args to set retrieve_all() params
 parser = argparse.ArgumentParser(
-    description="Retrieves all boardgames from Board Game Geek via API."
+    description="Retrieves all boardgames from Board Game Geek via API.",
+    formatter_class=argparse.ArgumentDefaultsHelpFormatter
 )
 
 parser.add_argument(
