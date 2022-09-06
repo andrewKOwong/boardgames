@@ -72,7 +72,7 @@ class Retriever:
             self,
             batch_cooldown: int = 5*60,
             server_cooldown: int = 6*60*60,
-            batch_size: int = 1000,
+            batch_size: int = 500,
             shuffle: bool = True,
             random_seed: int = None,
             max_id: int = None) -> None:
@@ -117,11 +117,10 @@ class Retriever:
                 encountering a server response error code. Defaults to
                 12*60*60, i.e. 12 hours.
             batch_size (int, optional): Number of 'thing' ids to request in one
-                batch. Defaults to 1000. Note: 1000 is a conservative
-                estimate of where the server might block the request for being
-                large, when requesting board games only (i.e. not expansions
-                and accessories). Board games comprise only about a third of
-                all ids.
+                batch. Defaults to 5000. Note: 500 seems to be a good size to
+                avoid server errors and server blocking, when requesting board
+                games only (i.e. not expansions and accessories). Board games
+                comprise only about a third of all ids.
             shuffle (bool, optional): Whether ids should be requested in a
                 randomized order. Defaults to True.
             random_seed (int, optional): Seed for randomizing order, supplied
