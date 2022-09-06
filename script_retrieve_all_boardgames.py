@@ -53,8 +53,8 @@ parser.add_argument(
 parser.add_argument(
     '--no-shuffle',
     dest='shuffle',
-    action='store_false',
-    default=True,
+    action='store_true',
+    default=False,
     help="Disable shuffling of 'thing' ids while downloading."
 )
 
@@ -86,6 +86,6 @@ retriever.retrieve_all(
     batch_cooldown=args.batch_cooldown,
     server_cooldown=args.server_cooldown,
     max_id=args.max_id,
-    shuffle=args.shuffle,
+    shuffle=not args.shuffle,
     random_seed=args.random_seed
 )
