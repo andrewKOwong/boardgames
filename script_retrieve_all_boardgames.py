@@ -55,7 +55,7 @@ parser.add_argument(
     dest='shuffle',
     action='store_true',
     default=False,
-    help="Disable shuffling of 'thing' ids while downloading."
+    help="Flag to disable shuffling of 'thing' ids while downloading."
 )
 
 parser.add_argument(
@@ -71,7 +71,7 @@ parser.add_argument(
     dest='clear_progress',
     action='store_true',
     default=False,
-    help="Clear progress file if already present in save directory."
+    help="Flag to clear progress file if already present in save directory."
 )
 
 args = parser.parse_args()
