@@ -1,3 +1,9 @@
+# OpenSSH keypair files
+*.pem
+
+# VSCode files
+.vscode/
+
 # Data file
 data/*
 

@@ -1,6 +1,6 @@
 import lxml.etree as etree
 from pathlib import Path
-from IPython.core.display import display, HTML
+from IPython.display import display, HTML
 
 
 def read_xml_file(file_path: str) -> etree.Element:
