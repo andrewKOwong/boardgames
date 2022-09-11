@@ -1,4 +1,4 @@
-import core.data_utils as u
+import core.etl as u
 import lxml.etree as etree
 import pytest
 
