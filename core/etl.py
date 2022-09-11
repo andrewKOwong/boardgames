@@ -1,8 +1,34 @@
 import lxml.etree as etree
 from pathlib import Path
+import pandas as pd
 
 
-def read_xml_file(file_path: str) -> etree.Element:
+def flatten_xml_folder_to_dataframe(dir_path: str) -> pd.DataFrame:
+    # TODO Call `flatten_xmlfile_to_dataframe` in a loop basically
+    pass
+
+
+def flatten_xml_file_to_dataframe(dir_path: str) -> pd.DataFrame:
+    # TODO Essentially a loop to
+    # 1) Read the xml file to get a list of items
+    # 2) Run a loop so that for each item you feed it into an
+    # ItemExtractor object, which various extraction options.
+    # You then extract a small dataframe.
+    # Include some sort of option to warn/raise of missing data, or return NA
+    # if a child tag doesn't exist.
+    # Concatenate the dataframes either during the loop (how to concantenate
+    # to an empty df?) or after. Memory may or may not be a concern.
+    # Return the final dataframe.
+    pass
+
+
+def write_dataframe_to_csv(save_path: str) -> None:
+    # Convenience func.
+    pass
+
+
+# TODO convenience func to handle the reading before extraction
+def _read_xml_file(file_path: str) -> etree.Element:
     """Read an xml file using lxml and get the root element.
 
     Parameters
@@ -22,7 +48,7 @@ def read_xml_file(file_path: str) -> etree.Element:
     return etree.fromstring(xml_data)
 
 
-class Extractor():
+class ItemExtractor():
     """
     Handles extracting various XML attributes and values
     in a bespoke manner for each value from BGG data.
@@ -84,6 +110,7 @@ class Extractor():
         return round(float(out), 4)
 
 
+# TODO Remove
 def extract_xml(file_path: str,
                 id: bool = True,
                 year_published: bool = False) -> dict:
@@ -95,10 +122,10 @@ def extract_xml(file_path: str,
         out['year_published'] = []
 
     # Get the root <items> item for an xml file
-    root = read_xml_file(file_path)
+    root = _read_xml_file(file_path)
     # Load up data from each item
     for item in root:
-        e = Extractor(item)
+        e = ItemExtractor(item)
         if id:
             out['id'].append(e.extract_id())
         if year_published:
