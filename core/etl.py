@@ -87,6 +87,8 @@ class ItemExtractor():
         out['name'] = self._extract_name()
         out['description'] = self._extract_description()
         out['year_published'] = self._extract_year_published()
+        out['players_min'] = self._extract_min_players()
+        out['players_max'] = self._extract_max_players()
         return out
 
     def extract_poll_data(self) -> dict:
@@ -132,6 +134,16 @@ class ItemExtractor():
     def _extract_year_published(self) -> int | None:
         """Return boardgame year published."""
         tag = self.item.find("yearpublished")
+        return None if tag is None else int(tag.attrib['value'])
+
+    def _extract_min_players(self) -> int | None:
+        """Return minimum number of players."""
+        tag = self.item.find("minplayers")
+        return None if tag is None else int(tag.attrib['value'])
+
+    def _extract_max_players(self) -> int | None:
+        """Return maximum number of players"""
+        tag = self.item.find("maxplayers")
         return None if tag is None else int(tag.attrib['value'])
 
     def _extract_n_ratings(self) -> int:
