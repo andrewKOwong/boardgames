@@ -80,13 +80,13 @@ class ItemExtractor():
         """
         self.item = item
 
-    def extract_general_data(self):
+    def extract_general_data(self) -> dict:
         pass
 
-    def extract_poll_data(self):
+    def extract_poll_data(self) -> dict:
         pass
 
-    def extract_link_data(self):
+    def extract_link_data(self) -> dict:
         pass
 
     def extract_id(self) -> int:
