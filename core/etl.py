@@ -8,7 +8,17 @@ def flatten_xml_folder_to_dataframe(dir_path: str) -> pd.DataFrame:
     pass
 
 
-def flatten_xml_file_to_dataframe(dir_path: str) -> pd.DataFrame:
+def flatten_xml_file_to_dataframe(
+        file_path: str,
+        id: bool = True,
+        name: bool = True,
+        year_published: bool = True,
+        ratings_n: bool = True,
+        ratings_mean: bool = True,
+        ratings_stddev: bool = True,
+        boardgame_designer: bool = True,
+        boardgame_publisher: bool = True,
+        ) -> pd.DataFrame:
     # TODO Essentially a loop to
     # 1) Read the xml file to get a list of items
     # 2) Run a loop so that for each item you feed it into an
@@ -19,6 +29,12 @@ def flatten_xml_file_to_dataframe(dir_path: str) -> pd.DataFrame:
     # Concatenate the dataframes either during the loop (how to concantenate
     # to an empty df?) or after. Memory may or may not be a concern.
     # Return the final dataframe.
+
+    root = _read_xml_file(file_path)
+    for child in root:
+        extractor = ItemExtractor(child)
+
+
     pass
 
 
@@ -63,6 +79,15 @@ class ItemExtractor():
             An element tagged item, corresponding to a board game entry.
         """
         self.item = item
+
+    def extract_general_data(self):
+        pass
+
+    def extract_poll_data(self):
+        pass
+
+    def extract_link_data(self):
+        pass
 
     def extract_id(self) -> int:
         """Return boardgame id."""
