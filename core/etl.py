@@ -90,28 +90,28 @@ class ItemExtractor():
         """Extract all link tags for the item."""
         return [link.attrib for link in self.item.findall('link')]
 
-    def extract_id(self) -> int:
+    def _extract_id(self) -> int:
         """Return boardgame id."""
         try:
             return int(self.item.attrib['id'])
         except KeyError:
             raise KeyError("Missing id attribute.")
 
-    def extract_name(self) -> str:
+    def _extract_name(self) -> str:
         """Return boardgame name."""
         element = self.item.find("name")
         if element is None:
             raise TypeError("Missing tag 'name'.")
         return element.attrib['value']
 
-    def extract_year_published(self) -> int:
+    def _extract_year_published(self) -> int:
         """Return boardgame year published."""
         element = self.item.find("yearpublished")
         if element is None:
             raise TypeError("Missing tag 'yearpublished'.")
         return int(element.attrib['value'])
 
-    def extract_n_ratings(self) -> int:
+    def _extract_n_ratings(self) -> int:
         """Return number of ratings."""
         out = self.item.find("statistics")\
                        .find("ratings")\
@@ -119,7 +119,7 @@ class ItemExtractor():
                        .attrib['value']
         return int(out)
 
-    def extract_ratings_mean(self) -> float:
+    def _extract_ratings_mean(self) -> float:
         """Return mean average rating to 3 decimals."""
         out = self.item.find("statistics")\
                        .find("ratings")\
@@ -127,7 +127,7 @@ class ItemExtractor():
                        .attrib['value']
         return round(float(out), 3)
 
-    def extract_ratings_stddev(self) -> float:
+    def _extract_ratings_stddev(self) -> float:
         """Return rating standard deviation to 4 decimals."""
         out = self.item.find("statistics")\
                        .find("ratings")\
@@ -153,8 +153,8 @@ def extract_xml(file_path: str,
     for item in root:
         e = ItemExtractor(item)
         if id:
-            out['id'].append(e.extract_id())
+            out['id'].append(e._extract_id())
         if year_published:
-            out['year_published'].append(e.extract_year_published())
+            out['year_published'].append(e._extract_year_published())
 
     return out
