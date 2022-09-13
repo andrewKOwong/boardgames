@@ -86,8 +86,9 @@ class ItemExtractor():
     def extract_poll_data(self) -> dict:
         pass
 
-    def extract_link_data(self) -> dict:
-        pass
+    def extract_link_data(self) -> list[dict]:
+        """Extract all link tags for the item."""
+        return [link.attrib for link in self.item.findall('link')]
 
     def extract_id(self) -> int:
         """Return boardgame id."""
