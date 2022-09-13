@@ -83,6 +83,7 @@ class ItemExtractor():
     def extract_general_data(self, raise_missing_id=True) -> dict:
         out = {}
         out['id'] = self._extract_id(raise_missing_id=raise_missing_id)
+        out['name'] = self._extract_name()
         return out
 
     def extract_poll_data(self) -> dict:
@@ -114,12 +115,11 @@ class ItemExtractor():
             else:
                 return None
 
-    def _extract_name(self) -> str:
+    def _extract_name(self) -> str | None:
         """Return boardgame name."""
-        element = self.item.find("name")
-        if element is None:
-            raise TypeError("Missing tag 'name'.")
-        return element.attrib['value']
+        # Return None if can't find the name tag.
+        tag = self.item.find("name")
+        return None if tag is None else tag.attrib['value']
 
     def _extract_year_published(self) -> int:
         """Return boardgame year published."""
