@@ -1,6 +1,7 @@
 import lxml.etree as etree
 from pathlib import Path
 import pandas as pd
+from html import unescape
 
 
 def flatten_xml_folder_to_dataframe(dir_path: str) -> pd.DataFrame:
@@ -84,6 +85,7 @@ class ItemExtractor():
         out = {}
         out['id'] = self._extract_id(raise_missing_id=raise_missing_id)
         out['name'] = self._extract_name()
+        out['description'] = self._extract_description()
         return out
 
     def extract_poll_data(self) -> dict:
@@ -120,6 +122,10 @@ class ItemExtractor():
         # Return None if can't find the name tag.
         tag = self.item.find("name")
         return None if tag is None else tag.attrib['value']
+
+    def _extract_description(self) -> str | None:
+        tag = self.item.find("description")
+        return None if tag is None else unescape(tag.text)
 
     def _extract_year_published(self) -> int:
         """Return boardgame year published."""
