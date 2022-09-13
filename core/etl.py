@@ -80,8 +80,10 @@ class ItemExtractor():
         """
         self.item = item
 
-    def extract_general_data(self) -> dict:
-        pass
+    def extract_general_data(self, raise_missing_id=True) -> dict:
+        out = {}
+        out['id'] = self._extract_id(raise_missing_id=raise_missing_id)
+        return out
 
     def extract_poll_data(self) -> dict:
         pass
@@ -90,12 +92,27 @@ class ItemExtractor():
         """Extract all link tags for the item."""
         return [link.attrib for link in self.item.findall('link')]
 
-    def _extract_id(self) -> int:
-        """Return boardgame id."""
+    def _extract_id(self, raise_missing_id=True) -> int | None:
+        """Return board game id
+
+        Args:
+            raise_missing_id (bool, optional): raises if the item has no id
+                attrib. Otherwise, ignore it and return None. Defaults to True.
+
+        Raises:
+            KeyError: If 'id' is not found in the items attributes.
+
+        Returns:
+            int | None: id | None if ignoring missing ids
+        """
         try:
+            # Access the attrib dict
             return int(self.item.attrib['id'])
         except KeyError:
-            raise KeyError("Missing id attribute.")
+            if raise_missing_id:
+                raise KeyError("Missing id attribute.")
+            else:
+                return None
 
     def _extract_name(self) -> str:
         """Return boardgame name."""
