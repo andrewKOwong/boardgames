@@ -89,6 +89,9 @@ class ItemExtractor():
         out['year_published'] = self._extract_year_published()
         out['players_min'] = self._extract_min_players()
         out['players_max'] = self._extract_max_players()
+        out['playtime'] = self._extract_playing_time()
+        out['playtime_min'] = self._extract_min_playtime()
+        out['playtime_max'] = self._extract_max_playtime()
         return out
 
     def extract_poll_data(self) -> dict:
@@ -144,6 +147,21 @@ class ItemExtractor():
     def _extract_max_players(self) -> int | None:
         """Return maximum number of players"""
         tag = self.item.find("maxplayers")
+        return None if tag is None else int(tag.attrib['value'])
+
+    def _extract_playing_time(self):
+        """Return playing time."""
+        tag = self.item.find("playingtime")
+        return None if tag is None else int(tag.attrib['value'])
+
+    def _extract_min_playtime(self):
+        """Return minimum playing time."""
+        tag = self.item.find("minplaytime")
+        return None if tag is None else int(tag.attrib['value'])
+
+    def _extract_max_playtime(self):
+        """Return maximum playing time."""
+        tag = self.item.find("maxplaytime")
         return None if tag is None else int(tag.attrib['value'])
 
     def _extract_n_ratings(self) -> int:
