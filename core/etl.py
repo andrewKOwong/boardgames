@@ -125,6 +125,7 @@ class ItemExtractor():
         return None if tag is None else tag.attrib['value']
 
     def _extract_description(self) -> str | None:
+        """Return boardgame description."""
         tag = self.item.find("description")
         return None if tag is None else unescape(tag.text)
 
