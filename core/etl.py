@@ -87,6 +87,7 @@ class ItemExtractor():
         # extraction of each tag be independent of each other.
         out = {}
         out['id'] = self._extract_id(raise_missing_id=raise_missing_id)
+        out['type'] = self._extract_type()
         out['name'] = self._extract_name()
         out['description'] = self._extract_description()
         out['year_published'] = self._extract_year_published()
@@ -138,6 +139,13 @@ class ItemExtractor():
                 raise KeyError("Missing id attribute.")
             else:
                 return None
+
+    def _extract_type(self) -> str | None:
+        """Return 'thing' type e.g. boardgame."""
+        try:
+            return self.item.attrib['type']
+        except KeyError:
+            return
 
     def _extract_name(self) -> str | None:
         """Return boardgame name."""
