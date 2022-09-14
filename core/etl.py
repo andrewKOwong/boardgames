@@ -165,22 +165,22 @@ class ItemExtractor():
         tag = self.item.find("maxplayers")
         return None if tag is None else int(tag.attrib['value'])
 
-    def _extract_playing_time(self):
+    def _extract_playing_time(self) -> int | None:
         """Return playing time."""
         tag = self.item.find("playingtime")
         return None if tag is None else int(tag.attrib['value'])
 
-    def _extract_min_playtime(self):
+    def _extract_min_playtime(self) -> int | None:
         """Return minimum playing time."""
         tag = self.item.find("minplaytime")
         return None if tag is None else int(tag.attrib['value'])
 
-    def _extract_max_playtime(self):
+    def _extract_max_playtime(self) -> int | None:
         """Return maximum playing time."""
         tag = self.item.find("maxplaytime")
         return None if tag is None else int(tag.attrib['value'])
 
-    def _extract_min_age(self):
+    def _extract_min_age(self) -> int | None:
         """Return minimum recommended age."""
         tag = self.item.find("minage")
         return None if tag is None else int(tag.attrib['value'])
