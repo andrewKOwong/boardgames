@@ -70,6 +70,8 @@ class ItemExtractor():
     Handles extracting various XML attributes and values
     in a bespoke manner for each value from BGG data.
     """
+    STAT_TAG = "statistics"
+    RATINGS_TAG = "ratings"
 
     def __init__(self, item):
         """Initalize with an item (i.e. a boardgame).
@@ -93,6 +95,18 @@ class ItemExtractor():
         out['playtime_min'] = self._extract_min_playtime()
         out['playtime_max'] = self._extract_max_playtime()
         out['age_min'] = self._extract_min_age()
+        out['ratings_n'] = self._extract_users_rated()
+        out['ratings_mean'] = self._extract_ratings_average()
+        out['ratings_bayes_average'] = self._extract_bayes_average()
+        out['ratings_stddev'] = self._extract_ratings_stddev()
+        out['ratings_median'] = self._extract_ratings_median()
+        out['ratings_owned'] = self._extract_ratings_owned()
+        out['ratings_trading'] = self._extract_ratings_trading()
+        out['ratings_wanting'] = self._extract_ratings_wanting()
+        out['ratings_wishing'] = self._extract_ratings_wishing()
+        out['ratings_comments_n'] = self._extract_ratings_num_comments()
+        out['ratings_weights_n'] = self._extract_ratings_num_weights()
+        out['ratings_weights_average'] = self._extract_ratings_average_weight()
         return out
 
     def extract_poll_data(self) -> dict:
@@ -170,29 +184,89 @@ class ItemExtractor():
         tag = self.item.find("minage")
         return None if tag is None else int(tag.attrib['value'])
 
-    def _extract_n_ratings(self) -> int:
-        """Return number of ratings."""
-        out = self.item.find("statistics")\
-                       .find("ratings")\
-                       .find("usersrated")\
-                       .attrib['value']
-        return int(out)
+    def _extract_ratings_subtag_helper(
+            self,
+            subtag: str,
+            attrib: str = 'value') -> str | None:
+        """Helper func to get values for subtags under "statistics -> ratings".
 
-    def _extract_ratings_mean(self) -> float:
+        Args:
+            subtag (str): Subtag name.
+            attrib (str, optional): Subtag attribute to retrieve.
+                Defaults to 'value'.
+
+        Returns:
+            str | None: Value of the subtag, otherwise None if it's missing.
+        """
+        # if statistics or ratings tag doesn't exist, .find() return None,
+        # so further .find() or .attrib() should raise AttributeError
+        try:
+            return self.item.find("statistics")\
+                            .find("ratings")\
+                            .find(subtag)\
+                            .attrib[attrib]
+        except AttributeError:
+            return
+
+    def _extract_users_rated(self) -> int | None:
+        """Return the number of user ratings."""
+        out = self._extract_ratings_subtag_helper("usersrated")
+        return None if out is None else int(out)
+
+    def _extract_ratings_average(self) -> float | None:
         """Return mean average rating to 3 decimals."""
-        out = self.item.find("statistics")\
-                       .find("ratings")\
-                       .find("average")\
-                       .attrib['value']
-        return round(float(out), 3)
+        out = self._extract_ratings_subtag_helper("average")
+        return None if out is None else round(float(out), 3)
 
-    def _extract_ratings_stddev(self) -> float:
+    def _extract_bayes_average(self) -> float | None:
+        """Return bayes average rating to 3 decimals."""
+        out = self._extract_ratings_subtag_helper("bayesaverage")
+        return None if out is None else round(float(out), 3)
+
+    def _extract_ratings_stddev(self) -> float | None:
         """Return rating standard deviation to 4 decimals."""
-        out = self.item.find("statistics")\
-                       .find("ratings")\
-                       .find("stddev")\
-                       .attrib['value']
-        return round(float(out), 4)
+        out = self._extract_ratings_subtag_helper("stddev")
+        return None if out is None else round(float(out), 4)
+
+    def _extract_ratings_median(self) -> float | None:
+        """Return rating median to 1 decimal."""
+        out = self._extract_ratings_subtag_helper("median")
+        return None if out is None else round(float(out), 1)
+
+    def _extract_ratings_owned(self) -> int | None:
+        """Return number of times this item is owned."""
+        out = self._extract_ratings_subtag_helper("owned")
+        return None if out is None else int(out)
+
+    def _extract_ratings_trading(self) -> int | None:
+        """Return number of times this item is up for trade."""
+        out = self._extract_ratings_subtag_helper("trading")
+        return None if out is None else int(out)
+
+    def _extract_ratings_wanting(self) -> int | None:
+        """Return number of times this item is wanted."""
+        out = self._extract_ratings_subtag_helper("wanted")
+        return None if out is None else int(out)
+
+    def _extract_ratings_wishing(self) -> int | None:
+        """Return number of times this item is wishlisted."""
+        out = self._extract_ratings_subtag_helper("wishing")
+        return None if out is None else int(out)
+
+    def _extract_ratings_num_comments(self) -> int | None:
+        """Return number of comments."""
+        out = self._extract_ratings_subtag_helper("numcomments")
+        return None if out is None else int(out)
+
+    def _extract_ratings_num_weights(self) -> int | None:
+        """Return number of weight (complexity) ratings this item has."""
+        out = self._extract_ratings_subtag_helper("numweights")
+        return None if out is None else int(out)
+
+    def _extract_ratings_average_weight(self) -> float | None:
+        """Return mean average weight of this item to 3 decimals."""
+        out = self._extract_ratings_subtag_helper("averageweight")
+        return None if out is None else round(float(out), 3)
 
 
 # TODO Remove
