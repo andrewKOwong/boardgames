@@ -70,8 +70,6 @@ class ItemExtractor():
     Handles extracting various XML attributes and values
     in a bespoke manner for each value from BGG data.
     """
-    STAT_TAG = "statistics"
-    RATINGS_TAG = "ratings"
 
     def __init__(self, item):
         """Initalize with an item (i.e. a boardgame).
