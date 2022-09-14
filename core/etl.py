@@ -82,8 +82,8 @@ class ItemExtractor():
         self.item = item
 
     def extract_general_data(self, raise_missing_id=True) -> dict:
-        # Uncertain if tags/data will change in future, but this 
-        # should decouple data keys from xml data, and let each 
+        # Uncertain if tags/data will change in future, but this
+        # should decouple data keys from xml data, and let each
         # extraction of each tag be independent of each other.
         out = {}
         out['id'] = self._extract_id(raise_missing_id=raise_missing_id)
