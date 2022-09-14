@@ -50,8 +50,8 @@ class MockServer:
 def test_retrieve_all_progress(monkeypatch, tmp_path):
     TEST_BATCH_SIZE = 2
     TEST_MAX_ID = 13
-    TEST_BATCH_COOLDOWN = 2
-    TEST_SERVER_COOLDOWN = 3
+    TEST_BATCH_COOLDOWN = 1
+    TEST_SERVER_COOLDOWN = 1
     # On Linux, tmp_path for most recent test should be at
     # /tmp/pytest-of-<user>/pytest-current
     TEST_DIR = tmp_path
