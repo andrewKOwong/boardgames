@@ -267,27 +267,3 @@ class ItemExtractor():
         """Return mean average weight of this item to 3 decimals."""
         out = self._extract_ratings_subtag_helper("averageweight")
         return None if out is None else round(float(out), 3)
-
-
-# TODO Remove
-def extract_xml(file_path: str,
-                id: bool = True,
-                year_published: bool = False) -> dict:
-    # Initialize empty lists for each data type of interest
-    out = {}
-    if id:
-        out['id'] = []
-    if year_published:
-        out['year_published'] = []
-
-    # Get the root <items> item for an xml file
-    root = _read_xml_file(file_path)
-    # Load up data from each item
-    for item in root:
-        e = ItemExtractor(item)
-        if id:
-            out['id'].append(e._extract_id())
-        if year_published:
-            out['year_published'].append(e._extract_year_published())
-
-    return out
