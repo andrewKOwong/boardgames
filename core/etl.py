@@ -254,7 +254,7 @@ class ItemExtractor():
 
     def _extract_ratings_wanting(self) -> int | None:
         """Return number of times this item is wanted."""
-        out = self._extract_ratings_subtag_helper("wanted")
+        out = self._extract_ratings_subtag_helper("wanting")
         return None if out is None else int(out)
 
     def _extract_ratings_wishing(self) -> int | None:
