@@ -156,6 +156,10 @@ class ItemExtractor():
     def _extract_description(self) -> str | None:
         """Return boardgame description."""
         tag = self.item.find("description")
+        # Note: input text is actually doubly escaped
+        # e.g. '&amp;quot;' for '"'
+        # the xml parser handles one of the unescapes automatically,
+        # but need to unescape a second time here.
         return None if tag is None else unescape(tag.text)
 
     def _extract_year_published(self) -> int | None:
