@@ -5,7 +5,7 @@ from html import unescape
 
 # Test data contains two items, a boardgame
 # as the first item, and additional items for error handling testing.
-# Path is as if `python -m pytest` is being run in the root folder.
+# Path is as if `pytest` is being run in the project root folder.
 TEST_DATA_FILEPATH = 'test/test_data.xml'
 # Just a single item and its data values it should have
 TEST_DATA_SINGLE_FILEPATH = 'test/test_data_single.xml'
@@ -46,12 +46,14 @@ TEST_DATA_SINGLE_VALUES = {'id': 28192,
                            'ratings_weights_average': 2}
 
 
+# Test etl._read_xml_file
 def test_read_xml_file(file_path=TEST_DATA_FILEPATH):
     root = etl._read_xml_file(file_path)
     assert root.tag == 'items'
     assert root.attrib.keys()[0] == 'termsofuse'
 
 
+# Test etl.ItemExtractor
 def test_item_extractor():
     """Given a single item from an xml file, test field extraction."""
     # Single item
