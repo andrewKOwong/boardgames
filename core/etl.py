@@ -81,34 +81,126 @@ class ItemExtractor():
         """
         self.item = item
 
-    def extract_general_data(self, raise_missing_id=True) -> dict:
+    def extract_general_data(
+            self,
+            raise_missing_id: bool = True,
+            id: str = 'id',
+            type: str = 'type',
+            name: str = 'name',
+            description: str = 'description',
+            yearpublished: str = 'year_published',
+            minplayers: str = 'players_min',
+            maxplayers: str = 'players_max',
+            playingtime: str = 'playtime',
+            minplaytime: str = 'playtime_min',
+            maxplaytime: str = 'playtime_max',
+            minage: str = 'age_min',
+            usersrated: str = 'ratings_n',
+            average: str = 'ratings_mean',
+            bayesaverage: str = 'ratings_bayes_average',
+            stddev: str = 'ratings_stddev',
+            median: str = 'ratings_median',
+            owned: str = 'ratings_owned',
+            trading: str = 'ratings_trading',
+            wanting: str = 'ratings_wanting',
+            wishing: str = 'ratings_wishing',
+            numcomments: str = 'ratings_comments_n',
+            numweights: str = 'ratings_weights_n',
+            averageweight: str = 'ratings_weights_average') -> dict:
+        """Extract data from an xml item, excluding 'poll' and 'link' tags.
+
+        Args:
+            raise_missing_id (bool, optional): Raise on missing id instead of
+                setting to None. Defaults to True.
+
+            The following args correspond to what the key should be in the
+            returned dictionary for each data field. The names of the args
+            correspond to the original xml tags. Default key names do some
+            tidying and categorizing of the field names.
+
+            id (str, optional): Id should be present for all boardgames.
+                Defaults to 'id'.
+            type (str, optional): For distinguishing between boardgames,
+                expansions, and accessories.
+                Defaults to 'type'.
+            name (str, optional): Name of the boardgame.
+                Defaults to 'name'.
+            description (str, optional): Text description of the game.
+                Defaults to 'description'.
+            yearpublished (str, optional): Year game was published.
+                Defaults to 'year_published'.
+            minplayers (str, optional): Minimum number of players.
+                Defaults to 'players_min'.
+            maxplayers (str, optional): Maximum number of players.
+                Defaults to 'players_max'.
+            playingtime (str, optional): Playing time.
+                Defaults to 'playtime'.
+            minplaytime (str, optional): Minimum playing time.
+                Defaults to 'playtime_min'.
+            maxplaytime (str, optional): Maximum playing time.
+                Defaults to 'playtime_max'.
+            minage (str, optional): Minimum recommended age.
+                Defaults to 'age_min'.
+            usersrated (str, optional): Number of user ratings.
+                Defaults to 'ratings_n'.
+            average (str, optional): Rating average.
+                Defaults to 'ratings_mean'.
+            bayesaverage (str, optional): Obfuscated rating average use for
+                rankings.
+                Defaults to 'ratings_bayes_average'.
+            stddev (str, optional): Rating standard deviation.
+                Defaults to 'ratings_stddev'.
+            median (str, optional): Median average.
+                Defaults to 'ratings_median'.
+            owned (str, optional): Number of users owning this game.
+                Defaults to 'ratings_owned'.
+            trading (str, optional): Number of users looking to trade the game.
+                Defaults to 'ratings_trading'.
+            wanting (str, optional): Number of users that want to trade for
+                this game.
+                Defaults to 'ratings_wanting'.
+            wishing (str, optional): Number of users with this game in their
+                wishlist.
+                Defaults to 'ratings_wishing'.
+            numcomments (str, optional): Number of comments on this game.
+                Defaults to 'ratings_comments_n'.
+            numweights (str, optional): Number of weight ratings. Weights are
+                estimate of the complexity of the game.
+                Defaults to 'ratings_weights_n'.
+            averageweight (str, optional): Average of weight ratings.
+                Defaults to 'ratings_weights_average'.
+
+        Returns:
+            dict: containing above keys, with their values coerced to an
+            appropriate type or None if the value is missing.
+        """
         # Uncertain if tags/data will change in future, but this
         # should decouple data keys from xml data, and let each
         # extraction of each tag be independent of each other.
         out = {}
-        out['id'] = self._extract_id(raise_missing_id=raise_missing_id)
-        out['type'] = self._extract_type()
-        out['name'] = self._extract_name()
-        out['description'] = self._extract_description()
-        out['year_published'] = self._extract_year_published()
-        out['players_min'] = self._extract_min_players()
-        out['players_max'] = self._extract_max_players()
-        out['playtime'] = self._extract_playing_time()
-        out['playtime_min'] = self._extract_min_playtime()
-        out['playtime_max'] = self._extract_max_playtime()
-        out['age_min'] = self._extract_min_age()
-        out['ratings_n'] = self._extract_users_rated()
-        out['ratings_mean'] = self._extract_ratings_average()
-        out['ratings_bayes_average'] = self._extract_bayes_average()
-        out['ratings_stddev'] = self._extract_ratings_stddev()
-        out['ratings_median'] = self._extract_ratings_median()
-        out['ratings_owned'] = self._extract_ratings_owned()
-        out['ratings_trading'] = self._extract_ratings_trading()
-        out['ratings_wanting'] = self._extract_ratings_wanting()
-        out['ratings_wishing'] = self._extract_ratings_wishing()
-        out['ratings_comments_n'] = self._extract_ratings_num_comments()
-        out['ratings_weights_n'] = self._extract_ratings_num_weights()
-        out['ratings_weights_average'] = self._extract_ratings_average_weight()
+        out[id] = self._extract_id(raise_missing_id=raise_missing_id)
+        out[type] = self._extract_type()
+        out[name] = self._extract_name()
+        out[description] = self._extract_description()
+        out[yearpublished] = self._extract_year_published()
+        out[minplayers] = self._extract_min_players()
+        out[maxplayers] = self._extract_max_players()
+        out[playingtime] = self._extract_playing_time()
+        out[minplaytime] = self._extract_min_playtime()
+        out[maxplaytime] = self._extract_max_playtime()
+        out[minage] = self._extract_min_age()
+        out[usersrated] = self._extract_users_rated()
+        out[average] = self._extract_ratings_average()
+        out[bayesaverage] = self._extract_bayes_average()
+        out[stddev] = self._extract_ratings_stddev()
+        out[median] = self._extract_ratings_median()
+        out[owned] = self._extract_ratings_owned()
+        out[trading] = self._extract_ratings_trading()
+        out[wanting] = self._extract_ratings_wanting()
+        out[wishing] = self._extract_ratings_wishing()
+        out[numcomments] = self._extract_ratings_num_comments()
+        out[numweights] = self._extract_ratings_num_weights()
+        out[averageweight] = self._extract_ratings_average_weight()
         return out
 
     def extract_poll_data(self) -> dict:
