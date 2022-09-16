@@ -64,3 +64,35 @@ def test_item_extractor_general_data():
     out = ex.extract_general_data()
     for key in GLOBAL_TEST_DATA_SINGLE_VALUES.keys():
         assert out[key] == GLOBAL_TEST_DATA_SINGLE_VALUES[key]
+
+
+# Test etl.ItemExtract.extract_link_data()
+def test_item_extraction_link_data():
+    TEST_LINK_LEN = 8
+    TEST_LINK_FIRST_BOARDGAME_ID = 28192
+    TEST_LINK_FIRST_TYPE = "boardgamecategory"
+    TEST_LINK_FIRST_LINK_ID = 1051
+    TEST_LINK_FIRST_VALUE = "Napoleonic"
+    TEST_LINK_LAST_BOARDGAME_ID = TEST_LINK_FIRST_BOARDGAME_ID
+    TEST_LINK_LAST_TYPE = "boardgamepublisher"
+    TEST_LINK_LAST_LINK_ID = 3925
+    TEST_LINK_LAST_LINK_VALUE = "Casus Belli"
+    """Given a single item from an xml file, test link tag extraction."""
+    # Single item
+    item = etree.fromstring(Path(GLOBAL_TEST_DATA_SINGLE_FILEPATH).read_bytes())[0]
+    # Load extractor
+    ex = etl.ItemExtractor(item)
+    # Get the links
+    links = ex.extract_link_data()
+    # Check the length and the first and last item
+    assert len(links) == TEST_LINK_LEN
+    first_link = links[0]
+    assert first_link['boardgame_id'] == TEST_LINK_FIRST_BOARDGAME_ID
+    assert first_link['type'] == TEST_LINK_FIRST_TYPE
+    assert first_link['link_id'] == TEST_LINK_FIRST_LINK_ID
+    assert first_link['value'] == TEST_LINK_FIRST_VALUE
+    last_link = links[-1]
+    assert last_link['boardgame_id'] == TEST_LINK_LAST_BOARDGAME_ID
+    assert last_link['type'] == TEST_LINK_LAST_TYPE
+    assert last_link['link_id'] == TEST_LINK_LAST_LINK_ID
+    assert last_link['value'] == TEST_LINK_LAST_LINK_VALUE
