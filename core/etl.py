@@ -9,34 +9,55 @@ def flatten_xml_folder_to_dataframe(dir_path: str) -> pd.DataFrame:
     pass
 
 
-def flatten_xml_file_to_dataframe(
+def flatten_xml_file_to_dataframes(
         file_path: str,
-        id: bool = True,
-        name: bool = True,
-        year_published: bool = True,
-        ratings_n: bool = True,
-        ratings_mean: bool = True,
-        ratings_stddev: bool = True,
-        boardgame_designer: bool = True,
-        boardgame_publisher: bool = True,
-        ) -> pd.DataFrame:
-    # TODO Essentially a loop to
-    # 1) Read the xml file to get a list of items
-    # 2) Run a loop so that for each item you feed it into an
-    # ItemExtractor object, which various extraction options.
-    # You then extract a small dataframe.
-    # Include some sort of option to warn/raise of missing data, or return NA
-    # if a child tag doesn't exist.
-    # Concatenate the dataframes either during the loop (how to concantenate
-    # to an empty df?) or after. Memory may or may not be a concern.
-    # Return the final dataframe.
+        get_general_data: bool = True,
+        get_link_data: bool = True,
+        get_poll_data: bool = True
+        ) -> dict[pd.DataFrame]:
+    """Given a single xml file, return its data in pandas DataFrames.
 
+    Args:
+        file_path (str): Location of the input xml file.
+        get_general_data (bool, optional): Return general data.
+            Defaults to True.
+        get_link_data (bool, optional): Return data relating boardgames to
+            other types of items.
+            Defaults to True.
+        get_poll_data (bool, optional): Return poll data for each boardgame.
+            Defaults to True.
+
+    Returns:
+        dict[pd.DataFrame]: Contains the requested dataframes.
+    """
+    # Initialize
+    out = {}
+    if get_general_data:
+        out['general_data'] = []
+    if get_link_data:
+        out['link_data'] = []
+    if get_poll_data:
+        out['poll_data'] = []
+
+    # Extract data.
+    # Link and poll data are lists of dicts themselves,
+    # hence extend not append.
     root = _read_xml_file(file_path)
-    for child in root:
-        extractor = ItemExtractor(child)
+    for item in root:
+        extractor = ItemExtractor(item)
+        if get_general_data:
+            out['general_data'].append(extractor.extract_general_data())
+        if get_link_data:
+            out['link_data'].extend(extractor.extract_link_data())
+        if get_poll_data:
+            out['poll_data'].extend(extractor.extract_poll_data())
 
+    # Convert to pandas DataFrames
+    out['general_data'] = pd.DataFrame(out['general_data'])
+    out['link_data'] = pd.DataFrame(out['link_data'])
+    out['poll_data'] = pd.DataFrame(out['poll_data'])
 
-    pass
+    return out
 
 
 def write_dataframe_to_csv(save_path: str) -> None:
