@@ -203,9 +203,51 @@ class ItemExtractor():
         out[averageweight_key] = self._extract_ratings_average_weight()
         return out
 
-    def extract_poll_data(self) -> dict:
+    def extract_poll_data(
+            self,
+            boardgame_id_key: str = 'boardgame_id'
+            ) -> list[dict]:
+
+        # Mention skipping value conversion to int etc.
+
+        # Flatten nested poll data into tall data table
         # TODO
-        pass
+        # It's like, theres a poll -> results -> result -> 
+        # FIND ALL POLLS
+        # BG ID, POLL NAME, POLL TITLE POLL, TOTAL VOTES, RESULT LEVEL, RESULT VALUE, NUM VOTES
+        # EACH POLL might be slightly different in poll options, probably just level.
+        polls = self.item.findall('poll')
+        boardgame_id = self._extract_id()
+        out = []
+        for poll in polls:
+            # Convert to dict to avoid unexpected behaviour
+            poll_attributes = dict(poll.attrib)
+            # Prefix keys
+            poll_attributes = {
+                f'poll_{k}': v for k, v in poll_attributes.items()
+                }
+            # Each poll may have multiple <results> tags
+            # with nested <result> tags.
+            results_tags = poll.findall('results')
+            for results_tag in results_tags:
+                results_attributes = dict(results_tag.attrib)
+                results_attributes = {
+                    f'results_{k}': v for k, v in results_attributes.items()
+                    }
+                inner_result_tags = results_tag.findall('result')
+                for inner_result_tag in inner_result_tags:
+                    inner_result_attributes = dict(inner_result_tag.attrib)
+                    inner_result_attributes = {
+                        f'result_{k}': v
+                        for k, v in inner_result_attributes.items()
+                        }
+                    # Collapse all attributes using Py3.9+ notation
+                    out.append(
+                        {boardgame_id_key: boardgame_id} |
+                        poll_attributes |
+                        results_attributes |
+                        inner_result_attributes)
+        return out
 
     def extract_link_data(
             self,
