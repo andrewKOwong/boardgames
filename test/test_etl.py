@@ -1,4 +1,3 @@
-from unittest import TestResult
 import core.etl as etl
 import lxml.etree as etree
 from pathlib import Path
@@ -122,7 +121,7 @@ def test_item_extraction_poll_data():
         'result_value': "Unplayable in another language",
         'result_numvotes': "0"
         }
-    
+
     # Single item
     item = etree.fromstring(
         Path(GLOBAL_TEST_DATA_SINGLE_FILEPATH).read_bytes())[0]
@@ -132,5 +131,5 @@ def test_item_extraction_poll_data():
     poll_results = ex.extract_poll_data()
     # The length and and all fields in first and last entry
     assert len(poll_results) == TEST_RESULTS_LENGTH
-    assert poll_results[0] == TEST_FIRST_ENTRY # compare dicts
+    assert poll_results[0] == TEST_FIRST_ENTRY  # compare dicts
     assert poll_results[-1] == TEST_LAST_ENTRY
