@@ -53,8 +53,8 @@ def test_read_xml_file(file_path=TEST_DATA_FILEPATH):
     assert root.attrib.keys()[0] == 'termsofuse'
 
 
-# Test etl.ItemExtractor
-def test_item_extractor():
+# Test etl.ItemExtractor.extract_general_data()
+def test_item_extractor_general_data():
     """Given a single item from an xml file, test field extraction."""
     # Single item
     item = etree.fromstring(Path(TEST_DATA_SINGLE_FILEPATH).read_bytes())[0]
