@@ -44,7 +44,6 @@ def write_dataframe_to_csv(save_path: str) -> None:
     pass
 
 
-# TODO convenience func to handle the reading before extraction
 def _read_xml_file(file_path: str) -> etree.Element:
     """Read an xml file using lxml and get the root element.
 
