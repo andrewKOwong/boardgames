@@ -6,14 +6,14 @@ from html import unescape
 # Test data contains two items, a boardgame
 # as the first item, and additional items for error handling testing.
 # Path is as if `pytest` is being run in the project root folder.
-TEST_DATA_FILEPATH = 'test/test_data.xml'
+GLOBAL_TEST_DATA_FILEPATH = 'test/test_data.xml'
 # Just a single item and its data values it should have
-TEST_DATA_SINGLE_FILEPATH = 'test/test_data_single.xml'
+GLOBAL_TEST_DATA_SINGLE_FILEPATH = 'test/test_data_single.xml'
 # The raw text is double escaped.
 # Not totally sure how, but lxml.etree parsers unescapes it once automatically,
 # With ItemExtractor unescaping it a second time.
 # Hence for test, will need to unescape it twice here.
-TEST_DATA_SINGLE_DESC = unescape(unescape(
+GLOBAL_TEST_DATA_SINGLE_DESC = unescape(unescape(
     "1812 Caspara is a generic wargame at the time of the Napoleonic Wars. Two"
     " armies land on a small island and fight for it. The rules are based on "
     "those of &amp;quot;1812: Les Arapiles&amp;quot; published in a previous "
@@ -21,10 +21,10 @@ TEST_DATA_SINGLE_DESC = unescape(unescape(
     "need Casus Belli #41 for the Standard Rules.&amp;#10;&amp;#10;"
 ))
 
-TEST_DATA_SINGLE_VALUES = {'id': 28192,
+GLOBAL_TEST_DATA_SINGLE_VALUES = {'id': 28192,
                            'type': 'boardgame',
                            'name': '1812: Caspara',
-                           'description': TEST_DATA_SINGLE_DESC,
+                           'description': GLOBAL_TEST_DATA_SINGLE_DESC,
                            'year_published': 1989,
                            'players_min': 2,
                            'players_max': 2,
@@ -47,7 +47,7 @@ TEST_DATA_SINGLE_VALUES = {'id': 28192,
 
 
 # Test etl._read_xml_file
-def test_read_xml_file(file_path=TEST_DATA_FILEPATH):
+def test_read_xml_file(file_path=GLOBAL_TEST_DATA_FILEPATH):
     root = etl._read_xml_file(file_path)
     assert root.tag == 'items'
     assert root.attrib.keys()[0] == 'termsofuse'
@@ -57,10 +57,10 @@ def test_read_xml_file(file_path=TEST_DATA_FILEPATH):
 def test_item_extractor_general_data():
     """Given a single item from an xml file, test field extraction."""
     # Single item
-    item = etree.fromstring(Path(TEST_DATA_SINGLE_FILEPATH).read_bytes())[0]
+    item = etree.fromstring(Path(GLOBAL_TEST_DATA_SINGLE_FILEPATH).read_bytes())[0]
     # Load extractor
     ex = etl.ItemExtractor(item)
     # Check each value
     out = ex.extract_general_data()
-    for key in TEST_DATA_SINGLE_VALUES.keys():
-        assert out[key] == TEST_DATA_SINGLE_VALUES[key]
+    for key in GLOBAL_TEST_DATA_SINGLE_VALUES.keys():
+        assert out[key] == GLOBAL_TEST_DATA_SINGLE_VALUES[key]
