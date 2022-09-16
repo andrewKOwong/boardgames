@@ -207,15 +207,28 @@ class ItemExtractor():
             self,
             boardgame_id_key: str = 'boardgame_id'
             ) -> list[dict]:
+        """Extract poll tags for the xml item.
 
-        # Mention skipping value conversion to int etc.
+         Poll data is in nested xml tags of <poll> -> <results> -> <result>,
+         with each poll not necessarily having the same attributes or number of
+         result/s etc. This extractor flattens out the data into a "tall" data
+         table, wherein each innermost <result> tag corresponds to a
+         row/element that includes attributes from the tag's parent <results>
+         and <poll> tag.
 
-        # Flatten nested poll data into tall data table
-        # TODO
-        # It's like, theres a poll -> results -> result -> 
-        # FIND ALL POLLS
-        # BG ID, POLL NAME, POLL TITLE POLL, TOTAL VOTES, RESULT LEVEL, RESULT VALUE, NUM VOTES
-        # EACH POLL might be slightly different in poll options, probably just level.
+         The originating boardgame id is included, which its value as an int.
+         All other values are str's.
+
+        Args:
+            boardgame_id_key (str, optional): Output key for boardgame id.
+                Defaults to 'boardgame_id'.
+
+        Returns:
+            list[dict]: Each dict corresponding to a <result> tag. Keys for
+            <result> tag attributes are prefixed with 'result_', and the keys
+            for the parent <results> and <poll> tag attributes are prefixed
+            with 'results_' and 'poll_', respectively.
+        """
         polls = self.item.findall('poll')
         boardgame_id = self._extract_id()
         out = []
