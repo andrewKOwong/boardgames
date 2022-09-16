@@ -22,28 +22,28 @@ GLOBAL_TEST_DATA_SINGLE_DESC = unescape(unescape(
 ))
 
 GLOBAL_TEST_DATA_SINGLE_VALUES = {'id': 28192,
-                           'type': 'boardgame',
-                           'name': '1812: Caspara',
-                           'description': GLOBAL_TEST_DATA_SINGLE_DESC,
-                           'year_published': 1989,
-                           'players_min': 2,
-                           'players_max': 2,
-                           'playtime': 120,
-                           'playtime_min': 120,
-                           'playtime_max': 120,
-                           'age_min': 12,
-                           'ratings_n': 7,
-                           'ratings_mean': 5.5,
-                           'ratings_bayes_average': 0,
-                           'ratings_stddev': 1.6690,
-                           'ratings_median': 0,
-                           'ratings_owned': 36,
-                           'ratings_trading': 0,
-                           'ratings_wanting': 1,
-                           'ratings_wishing': 4,
-                           'ratings_comments_n': 5,
-                           'ratings_weights_n': 1,
-                           'ratings_weights_average': 2}
+                                  'type': 'boardgame',
+                                  'name': '1812: Caspara',
+                                  'description': GLOBAL_TEST_DATA_SINGLE_DESC,
+                                  'year_published': 1989,
+                                  'players_min': 2,
+                                  'players_max': 2,
+                                  'playtime': 120,
+                                  'playtime_min': 120,
+                                  'playtime_max': 120,
+                                  'age_min': 12,
+                                  'ratings_n': 7,
+                                  'ratings_mean': 5.5,
+                                  'ratings_bayes_average': 0,
+                                  'ratings_stddev': 1.6690,
+                                  'ratings_median': 0,
+                                  'ratings_owned': 36,
+                                  'ratings_trading': 0,
+                                  'ratings_wanting': 1,
+                                  'ratings_wishing': 4,
+                                  'ratings_comments_n': 5,
+                                  'ratings_weights_n': 1,
+                                  'ratings_weights_average': 2}
 
 
 # Test etl._read_xml_file
@@ -57,7 +57,8 @@ def test_read_xml_file(file_path=GLOBAL_TEST_DATA_FILEPATH):
 def test_item_extractor_general_data():
     """Given a single item from an xml file, test field extraction."""
     # Single item
-    item = etree.fromstring(Path(GLOBAL_TEST_DATA_SINGLE_FILEPATH).read_bytes())[0]
+    item = etree.fromstring(
+        Path(GLOBAL_TEST_DATA_SINGLE_FILEPATH).read_bytes())[0]
     # Load extractor
     ex = etl.ItemExtractor(item)
     # Check each value
@@ -79,7 +80,8 @@ def test_item_extraction_link_data():
     TEST_LINK_LAST_LINK_VALUE = "Casus Belli"
     """Given a single item from an xml file, test link tag extraction."""
     # Single item
-    item = etree.fromstring(Path(GLOBAL_TEST_DATA_SINGLE_FILEPATH).read_bytes())[0]
+    item = etree.fromstring(
+        Path(GLOBAL_TEST_DATA_SINGLE_FILEPATH).read_bytes())[0]
     # Load extractor
     ex = etl.ItemExtractor(item)
     # Get the links
