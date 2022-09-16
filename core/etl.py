@@ -227,9 +227,11 @@ class ItemExtractor():
         boardgame_id = self._extract_id()
         out = []
         for link in links:
-            link = link.attrib
-            # Rename the 'id' key from the <link> tag
-            link[link_id_key] = link.pop('id')
+            # .attrib is not quite an actual dict, has unexpected behaviour
+            # when int-ing and assigning value
+            link = dict(link.attrib)
+            # Rename the 'id' key from the <link> tag, and int the value
+            link[link_id_key] = int(link.pop('id'))
             # Put 'boardgame_id_key' in the front as client code will
             # probably want that in the first column of a pandas DataFrame.
             # Note: Python 3.7+ should have dict orders preserved.
