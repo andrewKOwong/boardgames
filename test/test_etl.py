@@ -69,6 +69,7 @@ def test_item_extractor_general_data():
 
 # Test etl.ItemExtract.extract_link_data()
 def test_item_extraction_link_data():
+    """Given a single item from an xml file, test link tag extraction."""
     TEST_LINK_LEN = 8
     TEST_LINK_FIRST_BOARDGAME_ID = 28192
     TEST_LINK_FIRST_TYPE = "boardgamecategory"
@@ -78,7 +79,6 @@ def test_item_extraction_link_data():
     TEST_LINK_LAST_TYPE = "boardgamepublisher"
     TEST_LINK_LAST_LINK_ID = 3925
     TEST_LINK_LAST_LINK_VALUE = "Casus Belli"
-    """Given a single item from an xml file, test link tag extraction."""
     # Single item
     item = etree.fromstring(
         Path(GLOBAL_TEST_DATA_SINGLE_FILEPATH).read_bytes())[0]
@@ -102,6 +102,7 @@ def test_item_extraction_link_data():
 
 # Test etl.ItemExtract.extract_poll_data()
 def test_item_extraction_poll_data():
+    """Given a single item from an xml file, test poll tag extraction."""
     TEST_RESULTS_LENGTH = 26
     TEST_FIRST_ENTRY = {
         'boardgame_id': 28192,
