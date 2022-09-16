@@ -1,3 +1,4 @@
+from unittest import TestResult
 import core.etl as etl
 import lxml.etree as etree
 from pathlib import Path
@@ -98,3 +99,38 @@ def test_item_extraction_link_data():
     assert last_link['type'] == TEST_LINK_LAST_TYPE
     assert last_link['link_id'] == TEST_LINK_LAST_LINK_ID
     assert last_link['value'] == TEST_LINK_LAST_LINK_VALUE
+
+
+# Test etl.ItemExtract.extract_poll_data()
+def test_item_extraction_poll_data():
+    TEST_RESULTS_LENGTH = 26
+    TEST_FIRST_ENTRY = {
+        'boardgame_id': 28192,
+        'poll_name': "suggested_numplayers",
+        'poll_title': "User Suggested Number of Players",
+        'poll_totalvotes': "3",
+        'results_numplayers': "1",
+        'result_value': "Best",
+        'result_numvotes': "0"
+        }
+    TEST_LAST_ENTRY = {
+        'boardgame_id': 28192,
+        'poll_name': "language_dependence",
+        'poll_title': "Language Dependence",
+        'poll_totalvotes': "3",
+        'result_level': "5",
+        'result_value': "Unplayable in another language",
+        'result_numvotes': "0"
+        }
+    
+    # Single item
+    item = etree.fromstring(
+        Path(GLOBAL_TEST_DATA_SINGLE_FILEPATH).read_bytes())[0]
+    # Load extractor
+    ex = etl.ItemExtractor(item)
+    # Get the poll results
+    poll_results = ex.extract_poll_data()
+    # The length and and all fields in first and last entry
+    assert len(poll_results) == TEST_RESULTS_LENGTH
+    assert poll_results[0] == TEST_FIRST_ENTRY # compare dicts
+    assert poll_results[-1] == TEST_LAST_ENTRY
