@@ -84,29 +84,29 @@ class ItemExtractor():
     def extract_general_data(
             self,
             raise_missing_id: bool = True,
-            id: str = 'id',
-            type: str = 'type',
-            name: str = 'name',
-            description: str = 'description',
-            yearpublished: str = 'year_published',
-            minplayers: str = 'players_min',
-            maxplayers: str = 'players_max',
-            playingtime: str = 'playtime',
-            minplaytime: str = 'playtime_min',
-            maxplaytime: str = 'playtime_max',
-            minage: str = 'age_min',
-            usersrated: str = 'ratings_n',
-            average: str = 'ratings_mean',
-            bayesaverage: str = 'ratings_bayes_average',
-            stddev: str = 'ratings_stddev',
-            median: str = 'ratings_median',
-            owned: str = 'ratings_owned',
-            trading: str = 'ratings_trading',
-            wanting: str = 'ratings_wanting',
-            wishing: str = 'ratings_wishing',
-            numcomments: str = 'ratings_comments_n',
-            numweights: str = 'ratings_weights_n',
-            averageweight: str = 'ratings_weights_average') -> dict:
+            id_key: str = 'id',
+            type_key: str = 'type',
+            name_key: str = 'name',
+            description_key: str = 'description',
+            yearpublished_key: str = 'year_published',
+            minplayers_key: str = 'players_min',
+            maxplayers_key: str = 'players_max',
+            playingtime_key: str = 'playtime',
+            minplaytime_key: str = 'playtime_min',
+            maxplaytime_key: str = 'playtime_max',
+            minage_key: str = 'age_min',
+            usersrated_key: str = 'ratings_n',
+            average_key: str = 'ratings_mean',
+            bayesaverage_key: str = 'ratings_bayes_average',
+            stddev_key: str = 'ratings_stddev',
+            median_key: str = 'ratings_median',
+            owned_key: str = 'ratings_owned',
+            trading_key: str = 'ratings_trading',
+            wanting_key: str = 'ratings_wanting',
+            wishing_key: str = 'ratings_wishing',
+            numcomments_key: str = 'ratings_comments_n',
+            numweights_key: str = 'ratings_weights_n',
+            averageweight_key: str = 'ratings_weights_average') -> dict:
         """Extract data from an xml item, excluding 'poll' and 'link' tags.
 
         Args:
@@ -178,29 +178,29 @@ class ItemExtractor():
         # should decouple data keys from xml data, and let each
         # extraction of each tag be independent of each other.
         out = {}
-        out[id] = self._extract_id(raise_missing_id=raise_missing_id)
-        out[type] = self._extract_type()
-        out[name] = self._extract_name()
-        out[description] = self._extract_description()
-        out[yearpublished] = self._extract_year_published()
-        out[minplayers] = self._extract_min_players()
-        out[maxplayers] = self._extract_max_players()
-        out[playingtime] = self._extract_playing_time()
-        out[minplaytime] = self._extract_min_playtime()
-        out[maxplaytime] = self._extract_max_playtime()
-        out[minage] = self._extract_min_age()
-        out[usersrated] = self._extract_users_rated()
-        out[average] = self._extract_ratings_average()
-        out[bayesaverage] = self._extract_bayes_average()
-        out[stddev] = self._extract_ratings_stddev()
-        out[median] = self._extract_ratings_median()
-        out[owned] = self._extract_ratings_owned()
-        out[trading] = self._extract_ratings_trading()
-        out[wanting] = self._extract_ratings_wanting()
-        out[wishing] = self._extract_ratings_wishing()
-        out[numcomments] = self._extract_ratings_num_comments()
-        out[numweights] = self._extract_ratings_num_weights()
-        out[averageweight] = self._extract_ratings_average_weight()
+        out[id_key] = self._extract_id(raise_missing_id=raise_missing_id)
+        out[type_key] = self._extract_type()
+        out[name_key] = self._extract_name()
+        out[description_key] = self._extract_description()
+        out[yearpublished_key] = self._extract_year_published()
+        out[minplayers_key] = self._extract_min_players()
+        out[maxplayers_key] = self._extract_max_players()
+        out[playingtime_key] = self._extract_playing_time()
+        out[minplaytime_key] = self._extract_min_playtime()
+        out[maxplaytime_key] = self._extract_max_playtime()
+        out[minage_key] = self._extract_min_age()
+        out[usersrated_key] = self._extract_users_rated()
+        out[average_key] = self._extract_ratings_average()
+        out[bayesaverage_key] = self._extract_bayes_average()
+        out[stddev_key] = self._extract_ratings_stddev()
+        out[median_key] = self._extract_ratings_median()
+        out[owned_key] = self._extract_ratings_owned()
+        out[trading_key] = self._extract_ratings_trading()
+        out[wanting_key] = self._extract_ratings_wanting()
+        out[wishing_key] = self._extract_ratings_wishing()
+        out[numcomments_key] = self._extract_ratings_num_comments()
+        out[numweights_key] = self._extract_ratings_num_weights()
+        out[averageweight_key] = self._extract_ratings_average_weight()
         return out
 
     def extract_poll_data(self) -> dict:
