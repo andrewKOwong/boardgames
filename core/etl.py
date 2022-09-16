@@ -40,6 +40,7 @@ def flatten_xml_file_to_dataframe(
 
 
 def write_dataframe_to_csv(save_path: str) -> None:
+    # TODO
     # Convenience func.
     pass
 
@@ -203,6 +204,7 @@ class ItemExtractor():
         return out
 
     def extract_poll_data(self) -> dict:
+        # TODO
         pass
 
     def extract_link_data(
