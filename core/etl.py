@@ -206,9 +206,36 @@ class ItemExtractor():
     def extract_poll_data(self) -> dict:
         pass
 
-    def extract_link_data(self) -> list[dict]:
-        """Extract all link tags for the item."""
-        return [link.attrib for link in self.item.findall('link')]
+    def extract_link_data(
+            self,
+            boardgame_id_key: str = 'boardgame_id',
+            link_id_key: str = 'link_id') -> list[dict]:
+        """Extract all link tags for the item.
+
+        Args:
+            boardgame_id_key (str, optional): Output key for boardgame id.
+                Defaults to 'boardgame_id'.
+            link_id_key (str, optional): Output key for the id associated with
+                the link. Defaults to 'link_id'.
+
+        Returns:
+            list[dict]: Each dict containing the originating board game, the
+                type of link, the link id, and the value of the link.
+        """
+        links = self.item.findall('link')
+        # For binding the boardgame id to the links
+        boardgame_id = self._extract_id()
+        out = []
+        for link in links:
+            link = link.attrib
+            # Rename the 'id' key from the <link> tag
+            link[link_id_key] = link.pop('id')
+            # Put 'boardgame_id_key' in the front as client code will
+            # probably want that in the first column of a pandas DataFrame.
+            # Note: Python 3.7+ should have dict orders preserved.
+            link = dict([(boardgame_id_key, boardgame_id), *link.items()])
+            out.append(link)
+        return out
 
     def _extract_id(self, raise_missing_id=True) -> int | None:
         """Return board game id
