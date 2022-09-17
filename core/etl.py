@@ -3,10 +3,44 @@ from pathlib import Path
 import pandas as pd
 from html import unescape
 
+KEY_GENERAL_DATA = 'general_data'
+KEY_LINK_DATA = 'link_data'
+KEY_POLL_DATA = 'poll_data'
 
-def flatten_xml_folder_to_dataframe(dir_path: str) -> pd.DataFrame:
-    # TODO Call `flatten_xmlfile_to_dataframe` in a loop basically
-    pass
+
+def flatten_xml_folder_to_dataframe(
+        dir_path: str,
+        get_general_data: bool = True,
+        get_link_data: bool = True,
+        get_poll_data: bool = True
+        ) -> dict[pd.DataFrame]:
+    # Get all the xml files in the dir.
+    p = Path(dir_path)
+    if not p.is_dir():
+        raise NotADirectoryError(f"{dir_path} is not a directory.")
+    xml_paths = p.glob('*.xml')
+    # Convert each xml file to a DataFrame, then concatenate together
+    out = {}
+    if get_general_data:
+        out[KEY_GENERAL_DATA] = []
+    if get_link_data:
+        out[KEY_LINK_DATA] = []
+    if get_poll_data:
+        out[KEY_POLL_DATA] = []
+    for xml_path in xml_paths:
+        dfs_dict = flatten_xml_file_to_dataframes(
+                       xml_path,
+                       get_general_data=get_general_data,
+                       get_link_data=get_link_data,
+                       get_poll_data=get_poll_data)
+        out[KEY_GENERAL_DATA].append(dfs_dict[KEY_GENERAL_DATA])
+        out[KEY_LINK_DATA].append(dfs_dict[KEY_LINK_DATA])
+        out[KEY_POLL_DATA].append(dfs_dict[KEY_POLL_DATA])
+    out[KEY_GENERAL_DATA] = pd.concat(out[KEY_GENERAL_DATA], ignore_index=True)
+    out[KEY_LINK_DATA] = pd.concat(out[KEY_LINK_DATA], ignore_index=True)
+    out[KEY_POLL_DATA] = pd.concat(out[KEY_POLL_DATA], ignore_index=True)
+
+    return out
 
 
 def flatten_xml_file_to_dataframes(
