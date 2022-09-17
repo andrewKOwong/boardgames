@@ -392,7 +392,10 @@ class ItemExtractor():
         # e.g. '&amp;quot;' for '"'
         # the xml parser handles one of the unescapes automatically,
         # but need to unescape a second time here.
-        return None if tag is None else unescape(tag.text)
+        # Note 2: it's possible for the tag to exist, but not the text.
+        # unescape() can't handle when tag.text is None.
+        return None if (tag is None) or (tag.text) is None \
+            else unescape(tag.text)
 
     def _extract_year_published(self) -> int | None:
         """Return boardgame year published."""
