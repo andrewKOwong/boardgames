@@ -112,10 +112,36 @@ def flatten_xml_file_to_dataframes(
     return out
 
 
-def write_dataframe_to_csv(save_path: str) -> None:
-    # TODO
-    # Convenience func.
-    pass
+def write_dataframes_to_csv(
+        dict_of_dataframes: dict[pd.DataFrame],
+        save_dir_path: str,
+        save_file_prefix: str,
+        ) -> None:
+    """Write a dict of pandas dataframes to csv files.
+
+    Files are saved to '<save_dir_path>/<save_file_prefix>_<dictkey>.csv'.
+
+    Args:
+        dict_of_dataframes (dict[pd.DataFrame]): Dict of dataframes, as
+            returned from e.g. `flatten_xml_folder_to_dataframe".
+        save_dir_path (str): Folder where files will be written.
+        save_file_prefix (str): Prefix for the file paths.
+
+    Raises:
+        NotADirectoryError: If the save directory doesn't exist or isn't a
+            directory.
+    """
+    CSV_SUFFIX = ".csv"
+
+    p = Path(save_dir_path)
+    # Check that save dir is in fact a directory
+    if not p.is_dir():
+        raise NotADirectoryError(f"{save_dir_path} is not a directory.")
+
+    for key, df in dict_of_dataframes.items():
+        # Construct the save file path
+        fp = p / f"{save_file_prefix}_{key}{CSV_SUFFIX}"
+        df.to_csv(fp)
 
 
 def _read_xml_file(file_path: str) -> etree.Element:
