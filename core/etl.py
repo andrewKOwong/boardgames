@@ -27,7 +27,8 @@ def flatten_xml_folder_to_dataframe(
             Defaults to True.
 
     Raises:
-        NotADirectoryError: if the directory doesn't or isn't a directory.
+        NotADirectoryError: if the directory doesn't exist or isn't a
+            directory.
 
     Returns:
         dict[pd.DataFrame]: Contains the requested dataframes.
