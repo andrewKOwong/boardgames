@@ -85,11 +85,11 @@ def flatten_xml_file_to_dataframes(
     # Initialize
     out = {}
     if get_general_data:
-        out['general_data'] = []
+        out[KEY_GENERAL_DATA] = []
     if get_link_data:
-        out['link_data'] = []
+        out[KEY_LINK_DATA] = []
     if get_poll_data:
-        out['poll_data'] = []
+        out[KEY_POLL_DATA] = []
 
     # Extract data.
     # Link and poll data are lists of dicts themselves,
@@ -98,16 +98,16 @@ def flatten_xml_file_to_dataframes(
     for item in root:
         extractor = ItemExtractor(item)
         if get_general_data:
-            out['general_data'].append(extractor.extract_general_data())
+            out[KEY_GENERAL_DATA].append(extractor.extract_general_data())
         if get_link_data:
-            out['link_data'].extend(extractor.extract_link_data())
+            out[KEY_LINK_DATA].extend(extractor.extract_link_data())
         if get_poll_data:
-            out['poll_data'].extend(extractor.extract_poll_data())
+            out[KEY_POLL_DATA].extend(extractor.extract_poll_data())
 
     # Convert to pandas DataFrames
-    out['general_data'] = pd.DataFrame(out['general_data'])
-    out['link_data'] = pd.DataFrame(out['link_data'])
-    out['poll_data'] = pd.DataFrame(out['poll_data'])
+    out[KEY_GENERAL_DATA] = pd.DataFrame(out[KEY_GENERAL_DATA])
+    out[KEY_LINK_DATA] = pd.DataFrame(out[KEY_LINK_DATA])
+    out[KEY_POLL_DATA] = pd.DataFrame(out[KEY_POLL_DATA])
 
     return out
 
