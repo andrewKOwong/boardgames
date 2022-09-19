@@ -46,8 +46,10 @@ def flatten_xml_folder_to_dataframe(
         out[KEY_LINK_DATA] = []
     if get_poll_data:
         out[KEY_POLL_DATA] = []
+
+    total_len = len(list(xml_paths))
     for i, xml_path in enumerate(xml_paths):
-        print(f"Extracting file {i+1} of {len(xml_paths)}")
+        print(f"Extracting file {i+1} of {total_len}")
         dfs_dict = flatten_xml_file_to_dataframes(
                        xml_path,
                        get_general_data=get_general_data,
