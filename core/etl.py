@@ -14,6 +14,24 @@ def flatten_xml_folder_to_dataframe(
         get_link_data: bool = True,
         get_poll_data: bool = True
         ) -> dict[pd.DataFrame]:
+    """Given a folder of xml files, return its data in pandas dataframes.
+
+    Args:
+        dir_path (str): Location of the folder of xml files.
+        get_general_data (bool, optional): Return general data.
+            Defaults to True.
+        get_link_data (bool, optional): Return data relating boardgames to
+            other types of items.
+            Defaults to True.
+        get_poll_data (bool, optional): Return poll data for each boardgame.
+            Defaults to True.
+
+    Raises:
+        NotADirectoryError: if the directory doesn't or isn't a directory.
+
+    Returns:
+        dict[pd.DataFrame]: Contains the requested dataframes.
+    """
     # Get all the xml files in the dir.
     p = Path(dir_path)
     if not p.is_dir():
