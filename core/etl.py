@@ -152,7 +152,7 @@ def write_dataframes_to_csv(
     for key, df in dict_of_dataframes.items():
         # Construct the save file path
         fp = p / f"{save_file_prefix}_{key}{CSV_SUFFIX}"
-        df.to_csv(fp)
+        df.to_csv(fp, index=False)
 
 
 def _read_xml_file(file_path: str) -> etree.Element:
