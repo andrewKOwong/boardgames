@@ -60,7 +60,8 @@ def flatten_xml_folder_to_dataframe(
         out[KEY_POLL_DATA].append(dfs_dict[KEY_POLL_DATA])
     if get_general_data:
         print("Concatenating general data...")
-        out[KEY_GENERAL_DATA] = pd.concat(out[KEY_GENERAL_DATA], ignore_index=True)
+        out[KEY_GENERAL_DATA] = pd.concat(out[KEY_GENERAL_DATA],
+                                          ignore_index=True)
     if get_link_data:
         print("Concatenating link data...")
         out[KEY_LINK_DATA] = pd.concat(out[KEY_LINK_DATA], ignore_index=True)
