@@ -37,7 +37,7 @@ def flatten_xml_folder_to_dataframe(
     p = Path(dir_path)
     if not p.is_dir():
         raise NotADirectoryError(f"{dir_path} is not a directory.")
-    xml_paths = p.glob('*.xml')
+    xml_paths = list(p.glob('*.xml'))
     # Convert each xml file to a DataFrame, then concatenate together
     out = {}
     if get_general_data:
@@ -47,7 +47,7 @@ def flatten_xml_folder_to_dataframe(
     if get_poll_data:
         out[KEY_POLL_DATA] = []
 
-    total_len = len(list(xml_paths))
+    total_len = len(xml_paths)
     for i, xml_path in enumerate(xml_paths):
         print(f"Extracting file {i+1} of {total_len}")
         dfs_dict = flatten_xml_file_to_dataframes(
