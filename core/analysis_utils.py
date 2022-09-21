@@ -1,4 +1,5 @@
 from IPython.display import display, HTML
+import pandas as pd
 
 
 def print_titled_text(
@@ -39,3 +40,13 @@ def display_id_link(id: int) -> None:
     """
     BASE_URL = "https://boardgamegeek.com/boardgame/"
     display(HTML(f"<a href={BASE_URL + str(id)}>ID: {id}</a>"))
+
+
+def print_null_count(
+        df: pd.DataFrame,
+        omit_zero_count: bool = True) -> None:
+    print_titled_text("null counts")
+    for colname, count in df.isnull().sum().items():
+        if omit_zero_count and (count == 0):
+            continue
+        print(f"{colname}: {count}")
