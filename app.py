@@ -32,3 +32,12 @@ with info_box.container():
 
 info_box.empty()
 
+st.write("## EDA: General Data")
+st.metric("Rows", gen_df.shape[0])
+st.metric("Columns", gen_df.shape[1])
+st.dataframe(data=gen_df.head(3))
+
+#st.metric("NAs", gen_df.is_na().sum())
+
+st.dataframe(data=gen_df.describe())
+st.dataframe(data=gen_df.dtypes)
