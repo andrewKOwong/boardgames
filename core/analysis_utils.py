@@ -20,6 +20,15 @@ def print_titled_text(
     print(underliner*len(title))
 
 
+def print_spacer(num_lines: int = 2) -> None:
+    """Print blank lines to space content appropriately.
+
+    Args:
+        num_lines (int): Number of blank lines to print.
+    """
+    print('\n'*num_lines)
+
+
 def display_id_link(id: int) -> None:
     """Display a clickable link in a Jupyter notebook from boardgame id.
 
