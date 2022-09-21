@@ -1,3 +1,6 @@
+# Archive folder for conveniently holding obsolete code
+archive
+
 # OpenSSH keypair files
 *.pem
 
