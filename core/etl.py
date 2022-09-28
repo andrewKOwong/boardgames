@@ -2,6 +2,7 @@ import lxml.etree as etree
 from pathlib import Path
 import pandas as pd
 from html import unescape
+from typing import Literal
 
 KEY_GENERAL_DATA = 'general_data'
 KEY_LINK_DATA = 'link_data'
@@ -127,22 +128,85 @@ def write_dataframes_to_csv(
         dict_of_dataframes: dict[pd.DataFrame],
         save_dir_path: str,
         save_file_prefix: str,
+        compress_csv: bool = True
         ) -> None:
     """Write a dict of pandas dataframes to csv files.
-
-    Files are saved to '<save_dir_path>/<save_file_prefix>_<dictkey>.csv'.
 
     Args:
         dict_of_dataframes (dict[pd.DataFrame]): Dict of dataframes, as
             returned from e.g. `flatten_xml_folder_to_dataframe".
         save_dir_path (str): Folder where files will be written.
         save_file_prefix (str): Prefix for the file paths.
+        compress_csv (bool, optional): CSV files will be compressed with
+            gunzip.
+            Defaults to True.
+    """
+    _write_dataframes(
+        dict_of_dataframes=dict_of_dataframes,
+        save_dir_path=save_dir_path,
+        save_file_prefix=save_file_prefix,
+        compress_csv=compress_csv,
+        output_format='csv'
+    )
+
+
+def write_dataframes_to_parquet(
+        dict_of_dataframes: dict[pd.DataFrame],
+        save_dir_path: str,
+        save_file_prefix: str,
+        ) -> None:
+    """Write a dict of pandas dataframes to parquet files.
+
+    Args:
+        dict_of_dataframes (dict[pd.DataFrame]): Dict of dataframes, as
+            returned from e.g. `flatten_xml_folder_to_dataframe".
+        save_dir_path (str): Folder where files will be written.
+        save_file_prefix (str): Prefix for the file paths.
+    """
+    _write_dataframes(
+        dict_of_dataframes=dict_of_dataframes,
+        save_dir_path=save_dir_path,
+        save_file_prefix=save_file_prefix,
+        output_format='parquet'
+    )
+
+
+def _write_dataframes(
+        dict_of_dataframes: dict[pd.DataFrame],
+        save_dir_path: str,
+        save_file_prefix: str,
+        output_format: Literal['parquet', 'csv'],
+        compress_csv: bool = True
+        ) -> None:
+    """Write a dict of pandas dataframes to parquet or csv files.
+
+    Wrap this func for more convenient client-facing func names.
+
+    Args:
+        dict_of_dataframes (dict[pd.DataFrame]): Dict of dataframes, as
+            returned from e.g. `flatten_xml_folder_to_dataframe`".
+        save_dir_path (str): Folder where files will be written.
+        save_file_prefix (str): Folder where files will be written.
+        output_format (str of 'parquet'|'csv'): Output files can be parquet or
+            csv format. Parquet is recommended if data does not have to be
+            human readable, as it is smaller and faster to read.
+        compress_csv (bool, optional): CSV files will be compressed with
+            gunzip.
+            Defaults to True.
 
     Raises:
+        ValueError: If output format is not accepted.
         NotADirectoryError: If the save directory doesn't exist or isn't a
             directory.
     """
+    PARQUET_SUFFIX = ".parquet"
     CSV_SUFFIX = ".csv"
+    GZ_SUFFIX = '.gz'
+
+    # Check output_format
+    output_format_vals = ['parquet', 'csv']
+    if output_format not in output_format_vals:
+        raise ValueError(f"output_format param not in {output_format_vals}.")
 
     p = Path(save_dir_path)
     # Check that save dir is in fact a directory
@@ -151,8 +215,17 @@ def write_dataframes_to_csv(
 
     for key, df in dict_of_dataframes.items():
         # Construct the save file path
-        fp = p / f"{save_file_prefix}_{key}{CSV_SUFFIX}"
-        df.to_csv(fp, index=False)
+        match output_format:
+            case 'parquet':
+                suffix = PARQUET_SUFFIX
+                fp = p / f"{save_file_prefix}_{key}{suffix}"
+                df.to_parquet(fp, index=False)
+            case 'csv':
+                suffix = CSV_SUFFIX
+                if compress_csv:
+                    suffix += GZ_SUFFIX
+                fp = p / f"{save_file_prefix}_{key}{suffix}"
+                df.to_csv(fp, index=False)
 
 
 def _read_xml_file(file_path: str) -> etree.Element:
