@@ -34,7 +34,7 @@ python script_retrieve_all_boardgames.py --save_dir <path_to_folder>
  ```
 This will download all boardgames in batches of 500, with 5 minutes of wait time between batches and 3 hours of wait time if there's a server error. These are very conservative wait times (may take 30 hours in total), you may want to shorten them using `--batch-cooldown` and `--server-cooldown` flags. Use `--help` to see all command line args.
 
-As more board games and other entries are added to BGG's system, the maximum id in-use will go increase. I could not find an easy, straight-forward way to retrieve the max id in-use. One way is to probe the API with id numbers e.g. `https://boardgamegeek.com/xmlapi2/thing?&id=374000` until it seems you are in a region where the API no longer returns anything. Then you can use the `--max-id` flag to set a higher max id.
+As more board games and other entries are added to BGG's system, the maximum id in-use will increase. I could not find an easy, straight-forward way to retrieve the max id in-use. One way is to probe the API with id numbers e.g. `https://boardgamegeek.com/xmlapi2/thing?&id=374000` until it seems you are in a region where the API no longer returns anything. Then you can use the `--max-id` flag to set a higher max id.
 
 
 ### ETL on Downloaded XML-formatted Data
