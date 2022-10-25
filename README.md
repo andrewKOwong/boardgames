@@ -1,10 +1,15 @@
 # boardgames (Work-In-Progress)
 
-This is a work-in-progress repo. The intention is to get data on all boardgames
-on boardgamegeek.com and analyze it.
-
+This is a work-in-progress repo.
 
 ## Project Summary
+
+This repo contains the code for a project where I download data pertaining to all board games on boardgamegeek.com (BGG).
+
+This code is explained in:
+- [Part one blogpost](https://mixedconclusions.com/blog/boardgames_part_one/) explaining data download and extraction.
+- Part two blogpost TBD analysing the data.
+
 
 ## Instructions
 ### Description of Files
@@ -19,11 +24,11 @@ on boardgamegeek.com and analyze it.
 ### Libraries Required
 - `python` 3.10+
 - `pandas`
-- `numpy
+- `numpy`
 
 ### Downloading Boardgames from BGG
 
-To download all board games, run in the project root folder:
+To download all board games, run the following line in the project root folder::
  ```sh
 python script_retrieve_all_boardgames.py --save_dir <path_to_folder>
  ```
@@ -32,7 +37,7 @@ This will download all boardgames in batches of 500, with 5 minutes of wait time
 As the maximum board game id in use by BGG will increase in the future, use `--max-id` to set a higher maximum id.
 
 ### ETL on Downloaded XML-formatted Data
-To extract downloaded XML data, run in the project root folder:
+To extract downloaded XML data, run the following line in the project root folder:
 ```sh
 python script_etl.py <path_to_folder_containing_xml_files> <path_to_output_folder> <prefix_for_extracted_files>
 ```
