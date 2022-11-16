@@ -10,8 +10,9 @@ archive
 # VSCode files
 .vscode/
 
-# Data file
+# Data files, except extracted parquet
 data/*
+!data/parquet/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
