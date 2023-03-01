@@ -1,14 +1,11 @@
-# boardgames (Work-In-Progress)
-
-This is a work-in-progress repo.
-
+# Exploring Boardgames
 ## Project Summary
 
-This repo contains the code for a project where I download data pertaining to all board games on boardgamegeek.com (BGG).
+This repo contains the code for a project where I download data pertaining to all board games on boardgamegeek.com (BGG) and perform exploratory data analysis.
 
 This code is explained in:
 - [Part one blogpost](https://mixedconclusions.com/blog/boardgames_part_one/) explaining data download and extraction.
-- Part two blogpost TBD analysing the data.
+- [Part two blogpost](https://mixedconclusions.com/blog/boardgames_part_two/#what-is-the-golden-age-of-board-games) containing exploratory data analysis.
 
 
 ## Instructions
@@ -24,7 +21,9 @@ This code is explained in:
 ### Libraries Required
 - `python` 3.10+
 - `pandas`
+- `seaborn`
 - `numpy`
+- `jupyter`
 
 ### Downloading Boardgames from BGG
 
@@ -47,6 +46,6 @@ By default, this extracts the data to `parquet` files. Use `--help` to see flags
 ### Running Tests
 In the project root directory, run `pytest`. Alternatively, run `pytest -sv` to see logging output from `stdout` as it is happening, or `pytest -rA` for better formatted logging output after the tests have finished running.
 
-## TODO Analysis
-- jupyter
-- blog post
+## Exploratory Data Analysis
+- `analysis.ipynb` is a Jupyter notebook for EDA
+- EDA highlights are presented in [this blogpost](https://mixedconclusions.com/blog/boardgames_part_two/#what-is-the-golden-age-of-board-games)
