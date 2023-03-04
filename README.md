@@ -49,3 +49,10 @@ In the project root directory, run `pytest`. Alternatively, run `pytest -sv` to 
 ## Exploratory Data Analysis
 - `analysis.ipynb` is a Jupyter notebook for EDA
 - EDA highlights are presented in [this blogpost](https://mixedconclusions.com/blog/boardgames_part_two/)
+
+### Key highlights
+- The Bayesian rating (aka the geek rating) is best approximated by adding 1972 dummy values of 5.5 to user ratings:
+<img src="https://raw.githubusercontent.com/andrewKOwong/boardgames/main/analysis_images/optimizing_bayes_model.png" width="80%">
+
+- The number of games and their median rating has been increasing from the 2010s to the present:
+<img src="https://github.com/andrewKOwong/boardgames/blob/main/analysis_images/ratings_v_year.png" width="80%" />
